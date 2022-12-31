@@ -1,7 +1,10 @@
-// v9 compat packages are API compatible with v8 code
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
+
+// documentation: https://firebase.google.com/docs/web/setup?authuser=1&hl=en#add-sdks-initialize
+
+import { initializeApp } from "firebase/app";
+import { getFirestore } from '@firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { getStorage } from 'firebase/storage';
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -14,10 +17,10 @@ const firebaseConfig = {
     measurementId: process.env.REACT_APP_MEASUREMENT_ID
 };
 
-initializeApp(firebaseConfig);
-const db = firebase.firestore(); //that is the cloud firestore  database 
-const storage = firebase.storage(); //that is the cloud firestore storage 
-const auth = firebase.auth(); //that is the firestore authentication object
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);//that is the cloud firestore  database 
+const storage = getStorage(app); //that is the cloud firestore storage 
+const auth = getAuth(app); //that is the firestore authentication object
 
 
 export {
