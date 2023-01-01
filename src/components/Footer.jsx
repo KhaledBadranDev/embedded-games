@@ -6,7 +6,7 @@ const Footer = () => {
 
     return (
         // Footer 
-        <footer className="bg-dark text-center text-white" style={{ marginTop: "20px" }}>
+        <footer className="bg-dark text-center text-white mt-5" >
             <div className="container p-4">
                 {/* Section: Social media  */}
                 <section className="mb-4">

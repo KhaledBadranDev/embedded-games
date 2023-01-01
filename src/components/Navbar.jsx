@@ -7,7 +7,7 @@ const Navbar = () => {
     return (
         <nav className="navbar navbar-expand-sm bg-dark navbar-dark py-2">
             <div className="container">
-                <Link to="./" className="nav-link text-white">Web4Game</Link>
+                <Link to="./" className="nav-link text-white">EmbeddedGames</Link>
                 <div className="collapse navbar-collapse">
                     <ul className="navbar-nav ms-auto">
                         <li className="nav-item ">
@@ -22,7 +22,6 @@ const Navbar = () => {
                         <li className="nav-item">
                             <CustomLink to="./admins" className="nav-link text-primary">Admins</CustomLink>
                         </li>
-
                     </ul>
                 </div>
             </div>
