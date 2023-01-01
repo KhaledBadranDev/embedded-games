@@ -16,7 +16,6 @@ const test = async () =>{
 const Home = () => {
     test()
 
-
     return (
         <div className="container text-center text-white mt-5">
             <h1>Home</h1>
