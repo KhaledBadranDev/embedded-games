@@ -14,7 +14,7 @@ const useAxios = (url) => {
                 setData(data);
         })
 
-    }, []);
+    }, [url, data]);
 
     return [data]
 }
