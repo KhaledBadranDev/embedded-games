@@ -1,33 +1,15 @@
-import { React, useState } from "react";
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
+import React from "react";
 import AddScratchGame from "./AddScratchGame"
+import AddCodestersGame from "./AddCodestersGame"
 
-const AddGame = (prop) => {
-    const [platform, setPlatform] = useState("Scratch")
-
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        console.log("platform", platform)
-    }
-
-
+const AddGame = ({platform}) => {
     return (
-        <div className="container">
-            <Form className="container text-white  rounded-3 shadow p-3 mb-5 bg-dark rounded" onSubmit={handleSubmit}>
-                <Form.Group className="mb-3" controlId="formBasicEmail">
-                    <Form.Label>Choose a Platform</Form.Label>
-                    <select
-                        value={platform}
-                        onChange={e => setPlatform(e.target.value)}
-                    >
-                        <option value={"Scratch"}>Scratch</option>
-                        <option value={"Codesters"}>Codesters</option>
-                    </select>
-                </Form.Group>
-            </Form>
+        <div className="mt-5 container bg-dark rounded rounded-3 shadow-lg pt-3 pb-5">
             {platform === "Scratch" &&
                 <AddScratchGame></AddScratchGame>
+            }
+            {platform === "Codesters" &&
+                <AddCodestersGame></AddCodestersGame>
             }
         </div>
     )

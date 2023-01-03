@@ -1,16 +1,23 @@
-import GameCard from '../components/GameCard'
-import useAxios from "../hooks/useAxios";
+import { useState,useEffect } from "react";
+import GamesCards from '../components/GamesCards'
+import { readDocs } from "../firebase/dbCRUD"
 
 
-const Scratch = (prop) => {
-    // fetched data from scratch api
-    const data = useAxios("/projects/723650095");
+const Scratch = () => {
+    const [gamesArr, setGamesArr] = useState([])
 
-    const games = []
-    console.log("data useAxios:", data)
+    useEffect(() => {
+        readDocs("scratch")
+            .then(parsedGamesArr => {
+                setGamesArr(parsedGamesArr);
+            })
+
+    }, [gamesArr]);
+    
     return (
-        GameCard(games)
-    ) 
+        GamesCards(gamesArr, "scratch")
+    )
+    
 }
 
 export default Scratch

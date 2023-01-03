@@ -1,24 +1,55 @@
 import { React, useState } from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import useAxios from "../hooks/useAxios"
+import { createDoc } from "../firebase/dbCRUD"
 
-
-const AddScratchGame = (prop) => {
-    const [id, setId] = useState(0)
+const AddScratchGame = ({ admin }) => {
+    const [id, setId] = useState()
+    // fetch data from scratch api
+    const [ScratchGameFields] = useAxios(`/projects/${id}`)
+    // [ScratchGameFields] to get the fetched data as an obj 
+    // instead of an array that has one object in it
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        console.log("id", id)
+        // string interpolation syntax: `..... ${var} ..`
+        const createdScratchGameObj = createScratchGameObj()
+        const firestoreGameDocName = createdScratchGameObj["title"].replace(/\s+/g, '_'); // replace whitespaces with underscores 
+        createDoc("scratch", firestoreGameDocName, createdScratchGameObj)
+            .then(res => {
+                console.log("res:", res)
+            })
+            .catch(error => {
+                console.log("error:", error)
+            })
+    }
+
+    const createScratchGameObj = () => {
+        // create an empty obj then fill it with the fetched data.
+        const createdScratchGameObj = {}
+        createdScratchGameObj["id"] = parseInt(id)
+        createdScratchGameObj["description"] = ScratchGameFields["description"]
+        createdScratchGameObj["image"] = ScratchGameFields["image"]
+        createdScratchGameObj["instructions"] = ScratchGameFields["instructions"]
+        createdScratchGameObj["title"] = ScratchGameFields["title"]
+        createdScratchGameObj["author"] = {
+            "profileImage": ScratchGameFields["author"]["profile"]["images"]["55x55"],
+            "username": ScratchGameFields["author"]["username"]
+        }
+        return createdScratchGameObj
     }
 
 
 
+
+
     return (
-        <div className="container">
-            <Form className="container text-white  rounded-3 shadow p-3 mb-5 bg-dark rounded" onSubmit={handleSubmit}>
+        <div className="container text-white">
+            <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
 
-                    <Form.Label>Email address</Form.Label>
+                    <Form.Label>Game Id</Form.Label>
                     <Form.Control
                         type="Game ID"
                         placeholder="Enter id e.g. 723650095"
@@ -31,7 +62,7 @@ const AddScratchGame = (prop) => {
                         All the other details will be fetched automatically using Scratch REST API.
                     </Form.Text>
                 </Form.Group>
-                
+
                 <div className="d-grid gap-2 col-6 mx-auto">
                     <Button variant="success" type="submit">
                         Submit
