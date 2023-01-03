@@ -1,4 +1,4 @@
-import GameCard from '../components/GameCard'
+import GamesCards from '../components/GamesCards'
 
 const Codesters = (prop) => {
     const games = [
@@ -53,7 +53,7 @@ const Codesters = (prop) => {
     ]
 
     return (
-        GameCard(games)
+        GamesCards(games)
     )
 }
 
