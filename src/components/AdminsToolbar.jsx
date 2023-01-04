@@ -6,7 +6,7 @@ import AddGame from "./AddGame"
 import UpdateGame from "./UpdateGame"
 import DeleteGame from "./DeleteGame"
 
-const AdminsToolbar = (prop) => {
+const AdminsToolbar = ({admin}) => {
     const [platform, setPlatform] = useState("Scratch")
     const [addGame, setAddGame] = useState(false)
     const [updateGame, setUpdateGame] = useState(false)
@@ -94,14 +94,14 @@ const AdminsToolbar = (prop) => {
                         value={platform}
                         onChange={e => setPlatform(e.target.value)}
                     >
-                        <option value={"Scratch"}>Scratch</option>
-                        <option value={"Codesters"}>Codesters</option>
+                        <option value={"scratch"}>Scratch</option>
+                        <option value={"codesters"}>Codesters</option>
                     </select>
                 </div>
             </div>
             
             {addGame &&
-                <AddGame platform={platform}></AddGame>
+                <AddGame platform={platform} admin={admin}></AddGame>
             }
             {updateGame &&
                 <UpdateGame></UpdateGame>
