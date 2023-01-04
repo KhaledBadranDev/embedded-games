@@ -1,2 +1,11 @@
-Remove the proxy field from package.json before deploying the app for prod.
+1. Remove the proxy field from package.json before deploying the app for prod.
 It is just for dev purposes to avoid cros issues. 
+
+2. to implement:
+- selected card JSX
+- add codesters game
+- improve deleting by id and not document name for both scratch and codesters
+- update scratch game
+- update codesters game
+- 
+
