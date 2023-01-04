@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form';
 import AdminsToolbar from "../components/AdminsToolbar";
 import isAdmin from "../firebase/authentication"
 
-const Admins = (prop) => {
+const Admins = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [adminLoggedIn, setAdminLoggedIn] = useState(false)
@@ -66,7 +66,7 @@ const Admins = (prop) => {
                 </Form>
             }
             { adminLoggedIn &&
-                <AdminsToolbar></AdminsToolbar>
+                <AdminsToolbar admin={email}></AdminsToolbar>
             }
         </div>
     )
