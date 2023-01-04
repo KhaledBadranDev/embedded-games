@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useCallback } from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { deleteDoc } from "../firebase/dbCRUD"
@@ -8,11 +8,8 @@ const DeleteGame = ({ admin, platform}) => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        // TODO not working
-        const collectionName = JSON.stringify(platform).toLowerCase()
-        const docName = id.toString()
-        console.log(docName)
-        deleteDoc(collectionName, docName)
+        const collectionName = platform.toLowerCase()
+        deleteDoc(collectionName, id)
             .then(res =>{
                 console.log("Game Deleted",res)
             })
@@ -21,9 +18,11 @@ const DeleteGame = ({ admin, platform}) => {
             })
     }
 
-
-
-
+    // using arrow functions or binding in JSX is a bad practice as it hurts the performance.
+    // because the function is recreated on each render.
+    // to solve this issue, use the callback with the useCallback() hook,
+    // and assign the dependencies to an empty array.
+    const setIdCallBack = useCallback(e => setId(e.target.value),[])
 
 
     return (
@@ -37,7 +36,7 @@ const DeleteGame = ({ admin, platform}) => {
                         placeholder="Enter id e.g. 723650095"
                         required
                         value={id}
-                        onChange={e => setId(e.target.value)}
+                        onChange={setIdCallBack}
                     />
 
                     <Form.Text className="text-muted mt-2">

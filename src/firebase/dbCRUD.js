@@ -55,12 +55,8 @@ const updateDoc = (collectionName, docId, newDocObj) => {
 
 const deleteDoc = (collectionName, docId) => {
     return new Promise(async (resolve, reject) => {
-        console.log(docId)
-        console.log(collectionName)
         deleteFirestoreDoc(doc(db, collectionName, docId))
-        // collection(db, collectionName).doc(docId).delete()
             .then(res => {
-                console.log("done")
                 resolve(res)
             })
             .catch(error => {
