@@ -1,5 +1,5 @@
 import { useState,useEffect } from "react";
-import GamesCards from '../components/GamesCards'
+import StructureGamesCards from '../components/StructureGamesCards'
 import { readDocs } from "../firebase/dbCRUD"
 
 
@@ -15,7 +15,7 @@ const Scratch = () => {
     }, [gamesArr]);
     
     return (
-        GamesCards(gamesArr, "scratch")
+        StructureGamesCards(gamesArr, "scratch")
     )
     
 }

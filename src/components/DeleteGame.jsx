@@ -1,22 +1,10 @@
 import { React, useState, useCallback } from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { deleteDoc } from "../firebase/dbCRUD"
+import { handleDeleteSubmission } from "../utils/handleSubmissions";
 
 const DeleteGame = ({ admin, platform}) => {
     const [id, setId] = useState()
-
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        const collectionName = platform.toLowerCase()
-        deleteDoc(collectionName, id)
-            .then(res =>{
-                console.log("Game Deleted",res)
-            })
-            .catch(error => {
-                console.log(error)
-            })
-    }
 
     // using arrow functions or binding in JSX is a bad practice as it hurts the performance.
     // because the function is recreated on each render.
@@ -24,11 +12,10 @@ const DeleteGame = ({ admin, platform}) => {
     // and assign the dependencies to an empty array.
     const setIdCallBack = useCallback(e => setId(e.target.value),[])
 
-
     return (
         <div className="text-white mt-5 container bg-dark rounded rounded-3 shadow-lg pt-3 pb-5">
             <h4 className="text-center">Deleting a {platform} Game</h4>
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={event => handleDeleteSubmission(event, id, platform, admin)}>
                 <Form.Group className="mb-3">
                     <Form.Label>Game Id</Form.Label>
                     <Form.Control
