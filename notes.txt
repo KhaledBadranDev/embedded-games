@@ -4,6 +4,7 @@ It is just for dev purposes to avoid cros issues.
 2. to implement:
 - selected card JSX
 - add codesters game
+- fix deleting docs
 - improve deleting by id and not document name for both scratch and codesters
 - update scratch game
 - update codesters game
