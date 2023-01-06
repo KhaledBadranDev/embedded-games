@@ -2,7 +2,7 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 
 
-export default function ScratchGameCard({gameObj}) {
+export default function GameCard({gameObj}) {
     return (
         <Card className="bg-dark">
             <Card.Img variant="top" src={gameObj["image"]} />
