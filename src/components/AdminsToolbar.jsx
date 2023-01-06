@@ -92,7 +92,7 @@ const AdminsToolbar = ({admin}) => {
                     <label className="mx-2">Choose a Platform</label>
                     <select
                         value={platform}
-                        onChange={e => setPlatform(e.target.value)}
+                        onChange={e => setPlatform((e.target.value).toLowerCase())}
                     >
                         <option value={"scratch"}>Scratch</option>
                         <option value={"codesters"}>Codesters</option>
