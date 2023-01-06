@@ -24,3 +24,6 @@ yarn-error.log*
 
 # configuration keys
 .env
+
+# words spelling extension config json file for vscode 
+settings.json
