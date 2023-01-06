@@ -8,11 +8,21 @@ ___
 
 ____
 
-## Install Bootstrap:<br>
+## Install React Bootstrap:<br>
 ### `npm install react-bootstrap bootstrap`
 
 ___
 
+## Install Original Bootstrap:<br>
+### `npm install bootstrap`
+
+___
+
+
+## Install Axios:<br>
+### `npm install axios`
+
+___
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
