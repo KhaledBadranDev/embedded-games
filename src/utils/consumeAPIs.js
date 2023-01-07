@@ -22,6 +22,10 @@ const fetchScratchProject = (id) => {
 }
 
 const fetchCodestersProject = async (id) => {
+    // codesters platform don't provide a REST API
+    // hence AJAX, JavaScript and HTML DOM have to be used here to parse the data
+    // use Fetch API instead of the XMLHttpRequest Object, because fetch can do the same, but in a simpler way.
+    // The Fetch API interface allows web browser to make HTTP requests to web servers.
     return new Promise(async (resolve, reject) => {
         try {
             // string interpolation syntax: `..... ${var} ..`
