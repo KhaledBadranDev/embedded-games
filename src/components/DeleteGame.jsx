@@ -10,12 +10,13 @@ const DeleteGame = ({ admin, platform}) => {
     // because the function is recreated on each render.
     // to solve this issue, use the callback with the useCallback() hook,
     // and assign the dependencies to an empty array.
-    const setIdCallBack = useCallback(e => setId(e.target.value),[])
+    const setIdCallBack = useCallback(event => setId(event.target.value),[])
+    const handleDeleteSubmissionCallBack = useCallback(event => handleDeleteSubmission(event, id, platform, admin), [id, platform, admin])
 
     return (
         <div className="text-white mt-5 container bg-dark rounded rounded-3 shadow-lg pt-3 pb-5">
             <h4 className="text-center">Deleting a {platform} Game</h4>
-            <Form onSubmit={event => handleDeleteSubmission(event, id, platform, admin)}>
+            <Form onSubmit={handleDeleteSubmissionCallBack}>
                 <Form.Group className="mb-3">
                     <Form.Label>Game Id</Form.Label>
                     <Form.Control
