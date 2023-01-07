@@ -40,7 +40,7 @@ const isValidId = (id, platform) => {
  * check if a document exists in the database or not
  * @param {string} collectionName name of the collection where the document is stored.
  * @param {*} docId id of the document that will be checked.It can be number as well as string depending on the collection.
- * @returns {promise} true if id exists in db, else false or error.
+ * @returns {promise} searched document as an object if id exists in db, else false or error.
  * @author Khaled Badran (Programming Gym) <gym4programming@gmail.com>
  */
 const isDocInDb = (collectionName, docId) => {
@@ -54,7 +54,7 @@ const isDocInDb = (collectionName, docId) => {
                 for (const [index,docObj] of docsArr.entries()) {
                     if (docObj["id"] === docId) {
                         console.log("yes")
-                        resolve(true);
+                        resolve(docObj);
                         break
                     }
                     // if we reached the last element/document of the array/db and the document isn't found
@@ -66,7 +66,7 @@ const isDocInDb = (collectionName, docId) => {
                 }
             })
             .catch(error => {
-                reject(error)
+                reject(false)
             })
     })
 }
