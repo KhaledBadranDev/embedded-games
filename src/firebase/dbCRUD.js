@@ -8,6 +8,8 @@ import {
     updateDoc as updateFirestoreDoc
 } from "firebase/firestore"
 
+import { isDocInDb } from "../utils/checkValidity"
+
 // documentation1: https://firebase.google.com/docs/database/web/read-and-write?authuser=1
 // documentation2: https://firebase.google.com/docs/firestore/manage-data/delete-data
 
@@ -55,13 +57,20 @@ const updateDoc = (collectionName, docId, newDocObj) => {
 
 const deleteDoc = (collectionName, docId) => {
     return new Promise(async (resolve, reject) => {
-        deleteFirestoreDoc(doc(db, collectionName, docId))
-            .then(res => {
-                resolve(res)
-            })
-            .catch(error => {
-                reject(error)
-            })
+        // delete a doc based on the id field not the document name in firestore
+        // thus we need to parse all the documents in firestore in the given collection
+        // and once the required id field is found, then we get the name/id of this document in firestore
+        // lastly this name of the document will be passed as an argument to the delete function and the document will be deleted
+        try {
+            const parsedDocObj = await isDocInDb(collectionName, docId)
+            // name of documents in firestore = value of the title field however whitespaces are replaced with underscores
+            const parsedDocName = parsedDocObj["title"].replace(/\s+/g, '_') // replace whitespaces with underscores
+            const deletedDocObj = await deleteFirestoreDoc(doc(db, collectionName, parsedDocName))
+            resolve(deletedDocObj)
+        } catch (error) {
+            reject(error)
+        }
+        
     })
 }
 
