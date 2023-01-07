@@ -50,30 +50,17 @@ const handleAddSubmission = async (event, id, platform, admin) => {
                 console.log("handleAddSubmission error", error)
             })
     }
-
-    // const [scratchGameFields] = useAxios(`/projects/${id}`) // string interpolation syntax: `..... ${var} ..`
-    // console.log("scratchGameFields", scratchGameFields)
-    // const [fetchedCodestersProjectFields] =  useFetch(`https://www.codesters.com/preview/${id}/`) // string interpolation syntax: `..... ${var} ..`
-    // console.log("fetchedCodestersProjectFields", fetchedCodestersProjectFields)
-
-    // const createdScratchGameObj = {}
-    // const firestoreGameDocName = createdScratchGameObj["title"].replace(/\s+/g, '_'); // replace whitespaces with underscores 
-    // createDoc("scratch", firestoreGameDocName, createdScratchGameObj)
-    //     .then(res => {
-    //         console.log("res:", res)
-    //     })
-    //     .catch(error => {
-    //         console.log("error:", error)
-    //     })
 }
 
 const handleUpdateSubmission = (event, id, platform, admin) => {
-
+    console.log("syncing")
 }
 
 const handleDeleteSubmission = (event, id, platform, admin) => {
     event.preventDefault()
     const collectionName = platform.toLowerCase()
+    // ids of scratch projects are always int and stored as number in the db
+    if (collectionName==="scratch") id = parseInt(id) 
     deleteDoc(collectionName, id)
         .then(res => {
             console.log("Game Deleted", res)
