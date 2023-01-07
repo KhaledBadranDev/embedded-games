@@ -104,10 +104,10 @@ const AdminsToolbar = ({admin}) => {
                 <AddGame platform={platform} admin={admin}></AddGame>
             }
             {updateGame &&
-                <UpdateGame></UpdateGame>
+                <UpdateGame platform={platform} admin={admin}></UpdateGame>
             }
             {deleteGame &&
-                <DeleteGame platform={platform}></DeleteGame>
+                <DeleteGame platform={platform} admin={admin}></DeleteGame>
             }
         </div>
     )
