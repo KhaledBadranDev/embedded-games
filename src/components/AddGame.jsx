@@ -15,7 +15,7 @@ const AddGame = ({ platform, admin }) => {
 
     return (
         <div className="mt-5 container bg-dark rounded rounded-3 shadow-lg pt-3 pb-5">
-            <h4 className="text-white text-center">Adding a {platform} Game</h4>
+            <h4 className="text-white text-center">Adding a {platform.charAt(0).toUpperCase()+platform.slice(1)} Game</h4>
             <div className="container text-white">
                 <Form onSubmit={handleAddSubmissionCallBack}>
                     <Form.Group className="mb-3" controlId="formBasicEmail">
