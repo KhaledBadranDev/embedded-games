@@ -8,7 +8,7 @@ import {
     updateDoc as updateFirestoreDoc
 } from "firebase/firestore"
 
-import { isDocInDb } from "../utils/checkValidity"
+import { isDocInDb } from "./dbHelpers"
 
 // documentation1: https://firebase.google.com/docs/database/web/read-and-write?authuser=1
 // documentation2: https://firebase.google.com/docs/firestore/manage-data/delete-data
@@ -43,8 +43,10 @@ const readDocs = (collectionName) => {
 }
 
 const updateDoc = (collectionName, docId, newDocObj) => {
-    const docRef = doc(db, collectionName, docId);
-    return new Promise((resolve, reject) => {
+    return new Promise( async (resolve, reject) => {
+        const parsedDocObj = await isDocInDb(collectionName, docId)
+        const parsedDocName = parsedDocObj["title"].replace(/\s+/g, '_') // replace whitespaces with underscores
+        const docRef = doc(db, collectionName, parsedDocName);    
         updateFirestoreDoc(docRef, newDocObj)
             .then(res => {
                 resolve(res)
