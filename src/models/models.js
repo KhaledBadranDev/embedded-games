@@ -1,4 +1,5 @@
 
+
 const createScratchDocObj = (fetchJSONScratchProject, id, admin) => {
     // create an empty obj then fill it with some fetched data.
     const createdScratchDocObj = {}
@@ -15,6 +16,7 @@ const createScratchDocObj = (fetchJSONScratchProject, id, admin) => {
 
     return createdScratchDocObj
 }
+
 
 const createCodestersDocObj = (fetchHTMLCodestersProject, id, admin) => {
     // parse html/xml response using DOMparse
@@ -38,7 +40,22 @@ const createCodestersDocObj = (fetchHTMLCodestersProject, id, admin) => {
     return createdCodestersDocObj
 }
 
+
+const createAdminDocObj = adminData => {
+    // 
+    console.log(adminData)
+    const createdAdmin = {
+        "email": adminData["email"],
+        "creationTime": adminData["metadata"]["email"],
+        "lastSignInTime": adminData["metadata"]["email"],
+
+    }
+    return createdAdmin
+}
+
+
 export {
     createScratchDocObj,
-    createCodestersDocObj
+    createCodestersDocObj,
+    createAdminDocObj
 }
