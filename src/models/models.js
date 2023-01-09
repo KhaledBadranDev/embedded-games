@@ -12,7 +12,7 @@ const createScratchDocObj = (fetchJSONScratchProject, id, admin) => {
         "profileImage": fetchJSONScratchProject["author"]["profile"]["images"]["55x55"],
         "username": fetchJSONScratchProject["author"]["username"]
     }
-    createdScratchDocObj["admin"] = admin
+    createdScratchDocObj["adminEmail"] = admin["email"]
 
     return createdScratchDocObj
 }
@@ -36,19 +36,22 @@ const createCodestersDocObj = (fetchHTMLCodestersProject, id, admin) => {
     createdCodestersDocObj["author"] = { 
         "username": author
     }
-    createdCodestersDocObj["admin"] = admin
+    createdCodestersDocObj["adminEmail"] = admin["email"]
     return createdCodestersDocObj
 }
 
 
 const createAdminDocObj = adminData => {
-    // 
-    console.log(adminData)
     const createdAdmin = {
+        "uid": adminData["uid"],
         "email": adminData["email"],
-        "creationTime": adminData["metadata"]["email"],
-        "lastSignInTime": adminData["metadata"]["email"],
-
+        "creationTime": adminData["metadata"]["creationTime"],
+        "lastSignInTime": adminData["metadata"]["lastSignInTime"],
+        "projectsIds": {
+            "scratch": [],
+            "codesters": []
+        },
+        "numberOfProjects": 0
     }
     return createdAdmin
 }
