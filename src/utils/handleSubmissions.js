@@ -9,16 +9,26 @@ import {
     updateDoc
 } from "../firebase/dbCRUD"
 
-import { getAdminDocs } from "../firebase/dbHelpers"
+import {
+    getAdminDocsFromCollection,
+    updateAdminProjectsFields
+} from "../firebase/dbHelpers"
+
+import {
+    isAdmin,
+    createAdmin
+} from "../firebase/authentication"
 
 import {
     createScratchDocObj,
-    createCodestersDocObj
+    createCodestersDocObj,
+    createAdminDocObj
 } from "../models/models"
 
 import {
     isDeepEqual
 } from "./utils"
+
 
 // notice the difference between using (.then(),.catch()) and (async, await)
 
@@ -31,7 +41,8 @@ const handleAddSubmission = async (event, id, platform, admin) => {
             const createdScratchDocObj = createScratchDocObj(fetchedScratchProject, id, admin)
             const firestoreScratchDocName = createdScratchDocObj["title"].replace(/\s+/g, '_'); // replace whitespaces with underscores 
             createDoc("scratch", firestoreScratchDocName, createdScratchDocObj)
-                .then(res => {
+                .then(async res => {
+                    await updateAdminProjectsFields(admin)
                     console.log("res:", res)
                 })
                 .catch(error => {
@@ -47,6 +58,7 @@ const handleAddSubmission = async (event, id, platform, admin) => {
                 const firestoreCodestersDocName = createdCodestersDocObj["title"].replace(/\s+/g, '_'); // replace whitespaces with underscores 
                 try {
                     const res = await createDoc("codesters", firestoreCodestersDocName, createdCodestersDocObj)
+                    await updateAdminProjectsFields(admin)
                     console.log("res:", res)
                 } catch (error) {
                     console.log("error:", error)
@@ -65,7 +77,7 @@ const handleUpdateSubmission = async (event, platform, admin) => {
         event.preventDefault()
         const updatedDocs = []
         const collectionName = platform.toLowerCase()
-        const adminGames = await getAdminDocs(admin, collectionName)
+        const adminGames = await getAdminDocsFromCollection(admin, collectionName)
         if (collectionName === "scratch") {
             // * you can't use async and await in foreach method
             // * thus use for of instead
@@ -109,7 +121,8 @@ const handleDeleteSubmission = (event, id, platform, admin) => {
     // ids of scratch projects are always int and stored as number in the db
     if (collectionName === "scratch") id = parseInt(id)
     deleteDoc(collectionName, id)
-        .then(res => {
+        .then(async res => {
+            await updateAdminProjectsFields(admin)
             console.log("Game Deleted", res)
         })
         .catch(error => {
@@ -117,20 +130,49 @@ const handleDeleteSubmission = (event, id, platform, admin) => {
         })
 }
 
-const handleSignInSubmission = (event, email, password) => {
+const handleSignInOrUpSubmission = (event, wantToSignedUp, email, password, setAdmin, setIsAdminSignedIn) => {
     event.preventDefault()
-    // isAdmin(email, password)
-    //     .then(res => {
-    //         setAdminLoggedIn(true)
-    //     })
-    //     .catch(err => {
-    //         console.log("err", err)
-    //     })
+    if (wantToSignedUp) handleSignUpSubmission(email, password, setAdmin, setIsAdminSignedIn)
+    else handleSignInSubmission(email, password, setAdmin, setIsAdminSignedIn)
 }
 
-const handleSignUpSubmission = (event, email, password) => {
-    event.preventDefault()
+const handleSignInSubmission = (email, password, setAdmin, setIsAdminSignedIn) => {
+    isAdmin(email, password)
+        .then(adminData => {
+            // update last Sign In time in db
+            // create new admin object, but that would miss up the projectsIds and numberOfProjects fields
+            // to resolve this issue we need to refill these fields again
+            const newAdminDocObj = createAdminDocObj(adminData)
+            updateAdminProjectsFields(newAdminDocObj)
+                .then(updatedAdminDocObj => {
+                    const AdminDocObjName = updatedAdminDocObj["email"]
+                    setAdmin(updatedAdminDocObj)
+                    setIsAdminSignedIn(true)
+                    createDoc("admins", AdminDocObjName, updatedAdminDocObj)
+                        .then(res => console.log(res))
+                        .catch(error => console.log(error))
+                })
+                .catch(error => console.log(error));
+        })
+        .catch(err => {
+            console.log("err", err)
+        })
+}
 
+const handleSignUpSubmission = (email, password, setAdmin, setIsAdminSignedIn) => {
+    createAdmin(email, password)
+        .then(adminData => {
+            setIsAdminSignedIn(true)
+            const createdAdminDocObj = createAdminDocObj(adminData)
+            const AdminDocObjName = createdAdminDocObj["email"]
+            setAdmin(createdAdminDocObj)
+            createDoc("admins", AdminDocObjName, createdAdminDocObj)
+                .then(res => console.log(res))
+                .catch(error => console.log(error))
+        })
+        .catch(err => {
+            console.log("err", err)
+        })
 }
 
 
@@ -139,6 +181,5 @@ export {
     handleAddSubmission,
     handleUpdateSubmission,
     handleDeleteSubmission,
-    handleSignInSubmission,
-    handleSignUpSubmission
+    handleSignInOrUpSubmission
 }
