@@ -12,6 +12,7 @@ import {
 import {
     getAdminDocsFromCollection,
     updateAdminProjectsFields,
+    isDocInDb,
     doesDocBelongToAdmin
 } from "../firebase/dbHelpers"
 
@@ -117,21 +118,30 @@ const handleUpdateSubmission = async (event, platform, admin) => {
     }
 }
 
-const handleDeleteSubmission = (event, id, platform, admin, setAdmin) => {
+const handleDeleteSubmission = async (event, id, platform, admin, setAdmin) => {
     event.preventDefault()
+    // if the document doesn't exist in the database, then it can't be deleted
+    const foundDoc = await isDocInDb(id)
+    if (!foundDoc) {
+        console.log("The document with the given id can't be deleted because it doesn't exist in the database!")
+        return
+    }
+
     const collectionName = platform.toLowerCase()
     // ids of scratch projects are always int and stored as number in the db
     if (collectionName === "scratch") id = parseInt(id)
-    if(doesDocBelongToAdmin(id, admin)){
+    
+    // if the project was not added by this admin then he/she is not allowed to delete it.
+    if (doesDocBelongToAdmin(id, admin)) {
         deleteDoc(collectionName, id)
-        .then(async res => {
-            const updatedAdmin = await updateAdminProjectsFields(admin)
-            setAdmin(updatedAdmin)
-            console.log("Game Deleted", res)
-        })
-        .catch(error => {
-            console.log(error)
-        })
+            .then(async res => {
+                const updatedAdmin = await updateAdminProjectsFields(admin)
+                setAdmin(updatedAdmin)
+                console.log("Game Deleted", res)
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
     else console.log("Not enough permissions! This project wasn't added by you.")
 }
