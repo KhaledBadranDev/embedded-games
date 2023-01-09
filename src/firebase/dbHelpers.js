@@ -92,9 +92,8 @@ const isDocInDb = async docId => {
         const scratchDocsArr = await readDocs("scratch")
         const codestersDocArr = await readDocs("codesters")
         const allDocsArr = [...scratchDocsArr, ...codestersDocArr] // spread operator to concat arrays
-    
         for (const [index, docObj] of allDocsArr.entries()) {
-            if (docObj["id"] === docId) {
+            if (docObj["id"].toString() === docId.toString()) {
                 foundDoc = {...docObj};
                 // {...obj} this is called javascript spread operator
                 // it is used for deep copying/cloning
@@ -102,7 +101,7 @@ const isDocInDb = async docId => {
             }
             // if we reached the last element/document of the array/db and the document isn't found
             // that means this required document doesn't exist in db 
-            if (index === allDocsArr.length - 1 && docObj["id"] !== docId)
+            else if (index === allDocsArr.length - 1 && docObj["id"] !== docId)
                 return false
         }
     } catch (error) {
