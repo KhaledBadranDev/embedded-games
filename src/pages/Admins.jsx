@@ -1,13 +1,13 @@
 import { React, useState, useCallback } from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import AdminsToolbar from "../components/AdminsToolbar";
-import { isAdmin, createAdmin } from "../firebase/authentication"
-import { handleSignInSubmission, handleSignUpSubmission } from "../utils/handleSubmissions"
+import AdminsToolbar from "./components/AdminsToolbar";
+import { handleSignInOrUpSubmission } from "../utils/handleSubmissions"
 
 const Admins = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [admin, setAdmin] = useState({})
     const [isAdminSignedIn, setIsAdminSignedIn] = useState(false)
     const [wantToSignedUp, setWantToSignedUp] = useState(false)
 
@@ -17,18 +17,10 @@ const Admins = () => {
     // and assign the dependencies to an empty array.
     const setEmailCallBack = useCallback(event => setEmail(event.target.value), [])
     const setPasswordCallBack = useCallback(event => setPassword(event.target.value), [])
+    const setWantToSignedUpCallBack = useCallback(() => setWantToSignedUp(!wantToSignedUp), [wantToSignedUp])
+    // pass "setIsAdminSignedIn" function as an argument to "handleSignInOrUpSubmission" function
+    const handleSignInOrUpSubmissionCallBack = useCallback(event => handleSignInOrUpSubmission(event,wantToSignedUp, email, password, setAdmin, setIsAdminSignedIn), [wantToSignedUp, email, password])
 
-
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        isAdmin(email, password)
-            .then(res => {
-                setIsAdminSignedIn(true)
-            })
-            .catch(err => {
-                console.log("err", err)
-            })
-    }
 
     return (
         <div className="container">
@@ -38,7 +30,7 @@ const Admins = () => {
                 // https://react-bootstrap.netlify.app/forms/overview/
             */}
             {!isAdminSignedIn &&
-                <Form className="container text-white  rounded-3 shadow p-3 mb-5 bg-dark rounded" onSubmit={handleSubmit}>
+                <Form className="container text-white  rounded-3 shadow p-3 mb-5 bg-dark rounded" onSubmit={handleSignInOrUpSubmissionCallBack}>
                     <Form.Group className="mb-3" controlId="formBasicEmail">
                         <Form.Label>Email address</Form.Label>
                         <Form.Control
@@ -82,7 +74,7 @@ const Admins = () => {
                                 <button
                                     type="button"
                                     className="btn btn-link mt-0"
-                                    onClick = {()=>setWantToSignedUp(true)}
+                                    onClick = {setWantToSignedUpCallBack}
                                 >
                                     Sign Up
                                 </button>
@@ -96,7 +88,7 @@ const Admins = () => {
                                 <button
                                     type="button"
                                     className="btn btn-link mt-0"
-                                    onClick = {()=>setWantToSignedUp(false)}
+                                    onClick = {setWantToSignedUpCallBack}
                                 >
                                     Sign In
                                 </button>
@@ -107,7 +99,7 @@ const Admins = () => {
                 </Form>
             }
             {isAdminSignedIn &&
-                <AdminsToolbar admin={email}></AdminsToolbar>
+                <AdminsToolbar admin={admin}></AdminsToolbar>
             }
         </div>
     )

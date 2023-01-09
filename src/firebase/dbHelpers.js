@@ -1,6 +1,11 @@
-import { readDocs } from "./dbCRUD"
+import { 
+    readDocs,
+    createDoc 
+} from "./dbCRUD"
 
-const getAdminDocs = (admin, collection) => {
+import {isDeepEqual} from "../utils/utils"
+
+const getAdminDocsFromCollection = (admin, collection) => {
     return new Promise(async (resolve, reject) => {
         try {
             // step1 create an empty array that would be filled with all games added by this admin
@@ -10,11 +15,58 @@ const getAdminDocs = (admin, collection) => {
             // step3 filter these documents by the "admin" field 
             // and add the ones that belong to this admin to the array
             allGames.forEach(game => {
-                if (game["admin"] === admin) adminGames.push(game)
+                if (game["adminEmail"] === admin["email"]) adminGames.push(game)
             })
     
             // finally return the array
             resolve(adminGames)
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+
+const updateAdminProjectsFields = admin => {
+    return new Promise(async (resolve, reject) => {
+        let updatedAdmin = {...admin} // cloning the original admin using s spread operator
+        try {
+            const adminScratchGamesArr = await getAdminDocsFromCollection(admin, "scratch")
+            const adminCodestersGamesArr = await getAdminDocsFromCollection(admin, "codesters")
+            // make sure that all docs id from codesters and scratch collection 
+            // are added to the admin
+
+            adminScratchGamesArr.forEach(game => {
+                if ( (game["adminEmail"] === updatedAdmin["email"]) && (!updatedAdmin["projectsIds"]["scratch"].includes(game["id"])))
+                    updatedAdmin["projectsIds"]["scratch"].push(game["id"])                   
+            })
+            adminCodestersGamesArr.forEach(game => {
+                if ( (game["adminEmail"] === updatedAdmin["email"]) && (!updatedAdmin["projectsIds"]["codesters"].includes(game["id"])))
+                    updatedAdmin["projectsIds"]["codesters"].push(game["id"])                    
+            })
+            // also keep in mind that
+            // if a doc got deleted (from codesters or scratch collections)
+            // make sure to remove it from the admin document as well.            
+            updatedAdmin["projectsIds"]["codesters"].forEach(adminCodestersDocId=>{
+                const found = adminCodestersGamesArr.find(codestersDoc => codestersDoc["id"] === adminCodestersDocId);
+                if(found===undefined){
+                    const docIndexToBeRemoved = updatedAdmin["projectsIds"]["codesters"].indexOf(adminCodestersDocId)
+                    updatedAdmin["projectsIds"]["codesters"].splice(docIndexToBeRemoved, 1); // remove that document using the splice method
+                }
+            })
+            updatedAdmin["projectsIds"]["scratch"].forEach(adminScratchDocId=>{
+                const found = adminScratchGamesArr.find(scratchDoc => scratchDoc["id"] === adminScratchDocId);
+                if(found===undefined){
+                    const docIndexToBeRemoved = updatedAdmin["projectsIds"]["scratch"].indexOf(adminScratchDocId)
+                    updatedAdmin["projectsIds"]["scratch"].splice(docIndexToBeRemoved, 1); // remove that document using the splice method
+                }
+            })
+            // update the numberOfProjects field as well
+            updatedAdmin["numberOfProjects"] = updatedAdmin["projectsIds"]["scratch"].length +  updatedAdmin["projectsIds"]["codesters"].length
+            if (!isDeepEqual(updatedAdmin, admin))
+                await createDoc("admins",updatedAdmin["email"],updatedAdmin)
+            // finally return the updatedAdmin
+            resolve(updatedAdmin)
         } catch (error) {
             reject(error)
         }
@@ -39,7 +91,6 @@ const isDocInDb = (collectionName, docId) => {
                 // it is used for deep copying/cloning
                 for (const [index,docObj] of docsArr.entries()) {
                     if (docObj["id"] === docId) {
-                        console.log("yes")
                         resolve(docObj);
                         break
                     }
@@ -58,6 +109,7 @@ const isDocInDb = (collectionName, docId) => {
 }
 
 export {
-    getAdminDocs,
+    getAdminDocsFromCollection,
+    updateAdminProjectsFields,
     isDocInDb
 }
