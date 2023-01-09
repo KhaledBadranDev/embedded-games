@@ -11,7 +11,8 @@ import {
 
 import {
     getAdminDocsFromCollection,
-    updateAdminProjectsFields
+    updateAdminProjectsFields,
+    doesDocBelongToAdmin
 } from "../firebase/dbHelpers"
 
 import {
@@ -121,7 +122,8 @@ const handleDeleteSubmission = (event, id, platform, admin, setAdmin) => {
     const collectionName = platform.toLowerCase()
     // ids of scratch projects are always int and stored as number in the db
     if (collectionName === "scratch") id = parseInt(id)
-    deleteDoc(collectionName, id)
+    if(doesDocBelongToAdmin(id, admin)){
+        deleteDoc(collectionName, id)
         .then(async res => {
             const updatedAdmin = await updateAdminProjectsFields(admin)
             setAdmin(updatedAdmin)
@@ -130,6 +132,8 @@ const handleDeleteSubmission = (event, id, platform, admin, setAdmin) => {
         .catch(error => {
             console.log(error)
         })
+    }
+    else console.log("Not enough permissions! This project wasn't added by you.")
 }
 
 const handleSignInOrUpSubmission = (event, wantToSignedUp, email, password, setAdmin, setIsAdminSignedIn) => {

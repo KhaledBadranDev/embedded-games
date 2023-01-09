@@ -27,6 +27,11 @@ const getAdminDocsFromCollection = (admin, collection) => {
 }
 
 
+const doesDocBelongToAdmin = (docId, admin) => {
+    return (admin["projectsIds"]["codesters"].includes(docId)) || (admin["projectsIds"]["scratch"].includes(docId))
+}
+
+
 const updateAdminProjectsFields = admin => {
     return new Promise(async (resolve, reject) => {
         let updatedAdmin = {...admin} // cloning the original admin using s spread operator
@@ -111,5 +116,6 @@ const isDocInDb = (collectionName, docId) => {
 export {
     getAdminDocsFromCollection,
     updateAdminProjectsFields,
-    isDocInDb
+    isDocInDb,
+    doesDocBelongToAdmin
 }
