@@ -76,40 +76,26 @@ const handleAddSubmission = async (event, id, platform, admin, setAdmin) => {
 
 const handleUpdateSubmission = async (event, platform, admin) => {
     try {
-        // TODO FIX DON"T REPEAT YOURSELF
         event.preventDefault()
         const updatedDocs = []
         const collectionName = platform.toLowerCase()
         const adminGames = await getAdminDocsFromCollection(admin, collectionName)
-        if (collectionName === "scratch") {
-            // * you can't use async and await in foreach method
-            // * thus use for of instead
-            for (const game of adminGames) {
-                const gameId = game["id"]
-                const fetchedUpdatedScratchProject = await fetchScratchProject(gameId)
-                const newUpdatedScratchDocObj = createScratchDocObj(fetchedUpdatedScratchProject, gameId, admin)
-                // compare objects not the reference using deep comparison
-                // if the objects are not equal then sync/update the document in db
-                // add the updated doc to the array to track which ones got updated/synced.
-                if (!isDeepEqual(newUpdatedScratchDocObj, game)) {
-                    await updateDoc(collectionName, gameId, newUpdatedScratchDocObj)
-                    updatedDocs.push(newUpdatedScratchDocObj)
-                }
-            }
-        } else if (collectionName === "codesters") {
-            // * you can't use async and await in foreach method
-            // * thus use for of instead
-            for (const game of adminGames) {
-                const gameId = game["id"]
-                const fetchedCodestersProject = await fetchCodestersProject(gameId)
-                const newUpdatedCodestersDocObj = createCodestersDocObj(fetchedCodestersProject, gameId, admin)
-                // compare objects not the reference using deep comparison
-                // if the objects are not equal then sync/update the document in db
-                // add the updated doc to the array to track which ones got updated/synced.
-                if (!isDeepEqual(newUpdatedCodestersDocObj, game)) {
-                    await updateDoc(collectionName, gameId, newUpdatedCodestersDocObj)
-                    updatedDocs.push(newUpdatedCodestersDocObj)
-                }
+        
+        // * you can't use async and await in foreach method
+        // * thus use for of instead
+        for (const game of adminGames){
+            const gameId = game["id"]
+            const fetchedUpdatedProject = collectionName==="scratch" ?
+            await fetchScratchProject(gameId) : 
+            await fetchCodestersProject(gameId)
+            
+            const newUpdatedDocObj = collectionName==="scratch" ? 
+            createScratchDocObj(fetchedUpdatedProject, gameId, admin) :
+            createCodestersDocObj(fetchedUpdatedProject, gameId, admin)
+
+            if (!isDeepEqual(newUpdatedDocObj, game)) {
+                await updateDoc(collectionName, gameId, newUpdatedDocObj)
+                updatedDocs.push(newUpdatedDocObj)
             }
         }
         console.log("updatedDocs:", updatedDocs)
