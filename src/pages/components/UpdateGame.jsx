@@ -1,6 +1,6 @@
 import { React, useCallback } from "react";
 import Button from 'react-bootstrap/Button';
-import { handleUpdateSubmission } from "../utils/handleSubmissions"
+import { handleUpdateSubmission } from "../../utils/handleSubmissions"
 
 const UpdateGame = ({ platform, admin }) => {
 

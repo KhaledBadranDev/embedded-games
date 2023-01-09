@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { React, useState, useCallback } from "react";
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -6,7 +6,7 @@ import AddGame from "./AddGame"
 import UpdateGame from "./UpdateGame"
 import DeleteGame from "./DeleteGame"
 
-const AdminsToolbar = ({admin}) => {
+const AdminsToolbar = ({ admin}) => {
     const [platform, setPlatform] = useState("Scratch")
     const [addGame, setAddGame] = useState(false)
     const [updateGame, setUpdateGame] = useState(false)
@@ -15,8 +15,12 @@ const AdminsToolbar = ({admin}) => {
     const [isUpdateGameDisabled, setIsUpdateGameDisabled] = useState(false);
     const [isDeleteGameDisabled, setIsDeleteGameDisabled] = useState(false);
 
-    const handelAddGame = (e) => {
-        e.preventDefault()
+    // using arrow functions or binding in JSX is a bad practice as it hurts the performance.
+    // because the function is recreated on each render.
+    // to solve this issue, use the callback with the useCallback() hook,
+    // and assign the dependencies to an empty array.
+    const handelAddGameCallBack = useCallback(event => {
+        event.preventDefault()
 
         setAddGame(true)
         setUpdateGame(false)
@@ -25,10 +29,10 @@ const AdminsToolbar = ({admin}) => {
         setIsAddGameDisabled(true)
         setIsUpdateGameDisabled(false)
         setIsDeleteGameDisabled(false)
-    }
+    }, [])
 
-    const handelUpdateGame = (e) => {
-        e.preventDefault()
+    const handelUpdateGameCallBack = useCallback(event => {
+        event.preventDefault()
 
         setUpdateGame(true)
         setAddGame(false)
@@ -37,10 +41,10 @@ const AdminsToolbar = ({admin}) => {
         setIsUpdateGameDisabled(true)
         setIsAddGameDisabled(false)
         setIsDeleteGameDisabled(false)
-    }
+    }, [])
 
-    const handelDeleteGame = (e) => {
-        e.preventDefault()
+    const handelDeleteGameCallBack = useCallback(event => {
+        event.preventDefault()
 
         setDeleteGame(true)
         setAddGame(false)
@@ -49,10 +53,40 @@ const AdminsToolbar = ({admin}) => {
         setIsDeleteGameDisabled(true)
         setIsAddGameDisabled(false)
         setIsUpdateGameDisabled(false)
-    }
+    }, [])
+
+
 
     return (
-        <div className="container bg-dark rounded rounded-5 p-5">
+        <div className="container bg-dark rounded rounded-5 p-md-5 p-3">
+            <div className="container text-muted bg-dark rounded rounded-3 shadow-lg pt-2 pb-2 mb-2 text-white">
+                <Row className="" xs={1} md={2}>
+                    <Col className="mt-md-0 text-center text-lg-start" key={1} >
+                        <span className="px-1">
+                            {/* string interpolation syntax: `..... ${var} ..` */}
+                            {`email: ${admin["email"]}`}
+                        </span>
+                    </Col>
+                    <Col className="mt-2 mt-md-0 text-center text-lg-end" key={2} >
+                        <span className="px-1">
+                            {/* string interpolation syntax: `..... ${var} ..` */}
+                            {`lastSignInTime: ${admin["lastSignInTime"]}`}
+                        </span>
+                    </Col>
+                    <Col className="mt-2 mt-md-0 text-center text-lg-start" key={3} >
+                        <span className="px-1">
+                            {/* string interpolation syntax: `..... ${var} ..` */}
+                            {`projectsAddedByYou: ${admin["numberOfProjects"]}`}
+                        </span>
+                    </Col>
+                    <Col className="mt-2 mt-md-0 text-center text-lg-end" key={4} >
+                        <span className="px-1">
+                            {/* string interpolation syntax: `..... ${var} ..` */}
+                            {`becameAdminOn: ${admin["creationTime"]}`}
+                        </span>
+                    </Col>
+                </Row>
+            </div>
             <div className="container bg-dark rounded rounded-3 shadow-lg pt-3 pb-5 text-center">
                 <h2 className="text-white mb-3">Admins Toolbar</h2>
                 <Row className="mt-5" xs={1} md={3}>
@@ -60,7 +94,7 @@ const AdminsToolbar = ({admin}) => {
                         <Button
                             className="px-4"
                             variant="success"
-                            onClick={handelAddGame}
+                            onClick={handelAddGameCallBack}
                             disabled={isAddGameDisabled}
                         >
                             Add a Game
@@ -70,7 +104,7 @@ const AdminsToolbar = ({admin}) => {
                         <Button
                             className="px-3"
                             variant="primary"
-                            onClick={handelUpdateGame}
+                            onClick={handelUpdateGameCallBack}
                             disabled={isUpdateGameDisabled}
                         >
                             Update a Game
@@ -80,7 +114,7 @@ const AdminsToolbar = ({admin}) => {
                         <Button
                             className="px-3"
                             variant="danger"
-                            onClick={handelDeleteGame}
+                            onClick={handelDeleteGameCallBack}
                             disabled={isDeleteGameDisabled}
                         >
                             Delete a Game
@@ -99,7 +133,7 @@ const AdminsToolbar = ({admin}) => {
                     </select>
                 </div>
             </div>
-            
+
             {addGame &&
                 <AddGame platform={platform} admin={admin}></AddGame>
             }

@@ -1,7 +1,7 @@
 import { React, useState, useCallback } from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { handleAddSubmission } from "../utils/handleSubmissions"
+import { handleAddSubmission } from "../../utils/handleSubmissions"
 
 const AddGame = ({ platform, admin }) => {
     const [id, setId] = useState()

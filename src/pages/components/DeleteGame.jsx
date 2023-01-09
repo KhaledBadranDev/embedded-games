@@ -1,7 +1,7 @@
 import { React, useState, useCallback } from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { handleDeleteSubmission } from "../utils/handleSubmissions";
+import { handleDeleteSubmission } from "../../utils/handleSubmissions";
 
 const DeleteGame = ({ admin, platform}) => {
     const [id, setId] = useState()

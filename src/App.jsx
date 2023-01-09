@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Navbar from "./Navbar";
-import Footer from "./Footer";
-import Home from "../pages/Home";
-import Scratch from "../pages/Scratch";
-import Codesters from "../pages/Codesters";
-import Admins from "../pages/Admins";
+import Navbar from "./pages/components/Navbar";
+import Footer from "./pages/components/Footer";
+import Home from "./pages/Home";
+import Scratch from "./pages/Scratch";
+import Codesters from "./pages/Codesters";
+import Admins from "./pages/Admins";
 
 function App() {
 	return (
