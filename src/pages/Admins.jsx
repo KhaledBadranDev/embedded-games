@@ -1,8 +1,9 @@
-import { React, useState, useCallback } from "react";
+import { React, useState, useCallback, createContext, useMemo } from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import AdminsToolbar from "./components/AdminsToolbar";
 import { handleSignInOrUpSubmission } from "../utils/handleSubmissions"
+
 
 const Admins = () => {
     const [email, setEmail] = useState("")
@@ -10,7 +11,9 @@ const Admins = () => {
     const [admin, setAdmin] = useState({})
     const [isAdminSignedIn, setIsAdminSignedIn] = useState(false)
     const [wantToSignedUp, setWantToSignedUp] = useState(false)
-
+    // to make the rerendering a bit more effective, useMemo hook
+    const adminContextProviderValue = useMemo(()=>({admin, setAdmin}),[admin, setAdmin])
+    
     // using arrow functions or binding in JSX is a bad practice as it hurts the performance.
     // because the function is recreated on each render.
     // to solve this issue, use the callback with the useCallback() hook,
@@ -99,7 +102,9 @@ const Admins = () => {
                 </Form>
             }
             {isAdminSignedIn &&
-                <AdminsToolbar admin={admin}></AdminsToolbar>
+                <AdminContext.Provider value={adminContextProviderValue}>
+                    <AdminsToolbar></AdminsToolbar>
+                </AdminContext.Provider>
             }
         </div>
     )
@@ -108,3 +113,4 @@ const Admins = () => {
 
 
 export default Admins
+export const AdminContext = createContext();

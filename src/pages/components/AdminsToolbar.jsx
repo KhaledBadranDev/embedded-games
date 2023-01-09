@@ -1,12 +1,15 @@
-import { React, useState, useCallback } from "react";
+import { React, useState, useCallback, useContext} from "react";
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import AddGame from "./AddGame"
 import UpdateGame from "./UpdateGame"
 import DeleteGame from "./DeleteGame"
+import { AdminContext } from "../Admins"
 
-const AdminsToolbar = ({ admin}) => {
+
+const AdminsToolbar = () => {
+    const {admin} = useContext(AdminContext)
     const [platform, setPlatform] = useState("Scratch")
     const [addGame, setAddGame] = useState(false)
     const [updateGame, setUpdateGame] = useState(false)
@@ -54,7 +57,6 @@ const AdminsToolbar = ({ admin}) => {
         setIsAddGameDisabled(false)
         setIsUpdateGameDisabled(false)
     }, [])
-
 
 
     return (
@@ -135,13 +137,13 @@ const AdminsToolbar = ({ admin}) => {
             </div>
 
             {addGame &&
-                <AddGame platform={platform} admin={admin}></AddGame>
+                <AddGame platform={platform}></AddGame>
             }
             {updateGame &&
-                <UpdateGame platform={platform} admin={admin}></UpdateGame>
+                <UpdateGame platform={platform}></UpdateGame>
             }
             {deleteGame &&
-                <DeleteGame platform={platform} admin={admin}></DeleteGame>
+                <DeleteGame platform={platform}></DeleteGame>
             }
         </div>
     )

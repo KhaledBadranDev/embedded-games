@@ -32,7 +32,7 @@ import {
 
 // notice the difference between using (.then(),.catch()) and (async, await)
 
-const handleAddSubmission = async (event, id, platform, admin) => {
+const handleAddSubmission = async (event, id, platform, admin, setAdmin) => {
     event.preventDefault()
     // TODO FIX DON"T REPEAT YOURSELF
     if (platform.toLowerCase() === "scratch") {
@@ -42,7 +42,8 @@ const handleAddSubmission = async (event, id, platform, admin) => {
             const firestoreScratchDocName = createdScratchDocObj["title"].replace(/\s+/g, '_'); // replace whitespaces with underscores 
             createDoc("scratch", firestoreScratchDocName, createdScratchDocObj)
                 .then(async res => {
-                    await updateAdminProjectsFields(admin)
+                    const updatedAdmin = await updateAdminProjectsFields(admin)
+                    setAdmin(updatedAdmin)
                     console.log("res:", res)
                 })
                 .catch(error => {
@@ -115,14 +116,15 @@ const handleUpdateSubmission = async (event, platform, admin) => {
     }
 }
 
-const handleDeleteSubmission = (event, id, platform, admin) => {
+const handleDeleteSubmission = (event, id, platform, admin, setAdmin) => {
     event.preventDefault()
     const collectionName = platform.toLowerCase()
     // ids of scratch projects are always int and stored as number in the db
     if (collectionName === "scratch") id = parseInt(id)
     deleteDoc(collectionName, id)
         .then(async res => {
-            await updateAdminProjectsFields(admin)
+            const updatedAdmin = await updateAdminProjectsFields(admin)
+            setAdmin(updatedAdmin)
             console.log("Game Deleted", res)
         })
         .catch(error => {

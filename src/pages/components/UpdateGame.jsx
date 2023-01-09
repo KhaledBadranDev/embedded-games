@@ -1,8 +1,11 @@
-import { React, useCallback } from "react";
+import { React, useCallback, useContext } from "react";
 import Button from 'react-bootstrap/Button';
 import { handleUpdateSubmission } from "../../utils/handleSubmissions"
+import { AdminContext } from "../Admins"
 
-const UpdateGame = ({ platform, admin }) => {
+
+const UpdateGame = ({ platform }) => {
+    const {admin} = useContext(AdminContext)
 
     // using arrow functions or binding in JSX is a bad practice as it hurts the performance.
     // because the function is recreated on each render.
