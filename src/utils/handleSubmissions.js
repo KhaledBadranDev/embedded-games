@@ -35,43 +35,30 @@ import {
 // notice the difference between using (.then(),.catch()) and (async, await)
 
 const handleAddSubmission = async (event, id, platform, admin, setAdmin) => {
-    event.preventDefault()
-    // TODO FIX DON"T REPEAT YOURSELF
-    if (platform.toLowerCase() === "scratch") {
-        try {
-            const fetchedScratchProject = await fetchScratchProject(id)
-            const createdScratchDocObj = createScratchDocObj(fetchedScratchProject, id, admin)
-            const firestoreScratchDocName = createdScratchDocObj["title"].replace(/\s+/g, '_'); // replace whitespaces with underscores 
-            createDoc("scratch", firestoreScratchDocName, createdScratchDocObj)
-                .then(async res => {
-                    const updatedAdmin = await updateAdminProjectsFields(admin)
-                    setAdmin(updatedAdmin)
-                    console.log("res:", res)
-                })
-                .catch(error => {
-                    console.log("error:", error)
-                })
-        } catch (error) {
-            console.log("handleAddSubmission error", error)
-        }
-    } else if (platform.toLowerCase() === "codesters") {
-        fetchCodestersProject(id)
-            .then(async fetchedCodestersProject => {
-                const createdCodestersDocObj = createCodestersDocObj(fetchedCodestersProject, id, admin)
-                const firestoreCodestersDocName = createdCodestersDocObj["title"].replace(/\s+/g, '_'); // replace whitespaces with underscores 
-                try {
-                    const res = await createDoc("codesters", firestoreCodestersDocName, createdCodestersDocObj)
-                    await updateAdminProjectsFields(admin)
-                    console.log("res:", res)
-                } catch (error) {
-                    console.log("error:", error)
-                }
-
-            })
-            .catch((error) => {
-                console.log("handleAddSubmission error", error)
-            })
+    try {
+        event.preventDefault()
+        // avoid having case sensitivity bugs
+        const collectionName = platform.toLowerCase()
+        // consume the right API and fetch the right data based on the collection
+        const fetchedProject = collectionName === "scratch" ?
+            await fetchScratchProject(id) :
+            await fetchCodestersProject(id)
+        // create the right schema for the document to be added to the db
+        const createdDocObj = collectionName === "scratch" ?
+            createScratchDocObj(fetchedProject, id, admin) :
+            createCodestersDocObj(fetchedProject, id, admin)
+        //naming the document in firestore db based on the title field 
+        const firestoreDocName = createdDocObj["title"].replace(/\s+/g, '_'); // replace whitespaces with underscores         
+        // finally create/add/write this document to firestore db 
+        const createdDocInDb = await createDoc(collectionName, firestoreDocName, createdDocObj)
+        // updated admin details/info based after adding a document to db
+        const updatedAdmin = await updateAdminProjectsFields(admin)
+        setAdmin(updatedAdmin)
+        console.log("res:", createdDocInDb)
+    } catch (error) {
+        console.log("handleAddSubmission error", error)
     }
+
 }
 
 const handleUpdateSubmission = async (event, platform, admin) => {
@@ -80,18 +67,18 @@ const handleUpdateSubmission = async (event, platform, admin) => {
         const updatedDocs = []
         const collectionName = platform.toLowerCase()
         const adminGames = await getAdminDocsFromCollection(admin, collectionName)
-        
+
         // * you can't use async and await in foreach method
         // * thus use for of instead
-        for (const game of adminGames){
+        for (const game of adminGames) {
             const gameId = game["id"]
-            const fetchedUpdatedProject = collectionName==="scratch" ?
-            await fetchScratchProject(gameId) : 
-            await fetchCodestersProject(gameId)
-            
-            const newUpdatedDocObj = collectionName==="scratch" ? 
-            createScratchDocObj(fetchedUpdatedProject, gameId, admin) :
-            createCodestersDocObj(fetchedUpdatedProject, gameId, admin)
+            const fetchedUpdatedProject = collectionName === "scratch" ?
+                await fetchScratchProject(gameId) :
+                await fetchCodestersProject(gameId)
+
+            const newUpdatedDocObj = collectionName === "scratch" ?
+                createScratchDocObj(fetchedUpdatedProject, gameId, admin) :
+                createCodestersDocObj(fetchedUpdatedProject, gameId, admin)
 
             if (!isDeepEqual(newUpdatedDocObj, game)) {
                 await updateDoc(collectionName, gameId, newUpdatedDocObj)
@@ -116,7 +103,7 @@ const handleDeleteSubmission = async (event, id, platform, admin, setAdmin) => {
     const collectionName = platform.toLowerCase()
     // ids of scratch projects are always int and stored as number in the db
     if (collectionName === "scratch") id = parseInt(id)
-    
+
     // if the project was not added by this admin then he/she is not allowed to delete it.
     if (doesDocBelongToAdmin(id, admin)) {
         deleteDoc(collectionName, id)
