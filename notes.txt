@@ -2,11 +2,17 @@
 It is just for dev purposes to avoid cros issues. 
 
 2. to implement:
+- add, update, delete submission status UI
+- viewing card:
+    - display admin, author
 - selected card JSX
-- add codesters game
-- fix deleting docs
-- improve deleting by id and not document name for both scratch and codesters
-- update scratch game
-- update codesters game
-- 
-
+    - can play the game
+    - display admin, author, description
+    - display instructions (if scratch) 
+- home page
+    - GIFs
+    - contact me form
+    - how to use website
+    - about
+- fix footer
+- fix toggle navbar icon for small screens
