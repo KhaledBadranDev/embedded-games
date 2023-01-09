@@ -5,7 +5,6 @@ import {
     createUserWithEmailAndPassword
 } from "firebase/auth";
 import { auth } from "./firebaseInit"
-import { createDoc } from "../firebase/dbCRUD"
 
 
 const isAdmin = (email, password) => {
@@ -14,7 +13,6 @@ const isAdmin = (email, password) => {
             const userCredential = await signInWithEmailAndPassword(auth, email, password)
             // successfully Signed in                
             const user = userCredential.user;
-            console.log(user)
             resolve(user)
         } catch (error) {
             // couldn't sign in

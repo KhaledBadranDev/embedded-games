@@ -1,5 +1,5 @@
 import { useState,useEffect } from "react";
-import StructureGamesCards from '../components/StructureGamesCards'
+import StructureGamesCards from './components/StructureGamesCards'
 import { readDocs } from "../firebase/dbCRUD"
 
 
