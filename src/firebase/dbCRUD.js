@@ -44,7 +44,7 @@ const readDocs = (collectionName) => {
 
 const updateDoc = (collectionName, docId, newDocObj) => {
     return new Promise( async (resolve, reject) => {
-        const parsedDocObj = await isDocInDb(collectionName, docId)
+        const parsedDocObj = await isDocInDb(docId) // isDocInDb here is like getDocFromDb because it return the doc object if was found 
         const parsedDocName = parsedDocObj["title"].replace(/\s+/g, '_') // replace whitespaces with underscores
         const docRef = doc(db, collectionName, parsedDocName);    
         updateFirestoreDoc(docRef, newDocObj)
@@ -64,7 +64,7 @@ const deleteDoc = (collectionName, docId) => {
         // and once the required id field is found, then we get the name/id of this document in firestore
         // lastly this name of the document will be passed as an argument to the delete function and the document will be deleted
         try {
-            const parsedDocObj = await isDocInDb(collectionName, docId)
+            const parsedDocObj = await isDocInDb(docId) // isDocInDb here is like getDocFromDb because it return the doc object if was found 
             // name of documents in firestore = value of the title field however whitespaces are replaced with underscores
             const parsedDocName = parsedDocObj["title"].replace(/\s+/g, '_') // replace whitespaces with underscores
             const deletedDocObj = await deleteFirestoreDoc(doc(db, collectionName, parsedDocName))

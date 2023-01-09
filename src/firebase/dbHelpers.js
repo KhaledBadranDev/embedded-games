@@ -1,9 +1,9 @@
-import { 
+import {
     readDocs,
-    createDoc 
+    createDoc
 } from "./dbCRUD"
 
-import {isDeepEqual} from "../utils/utils"
+import { isDeepEqual } from "../utils/utils"
 
 const getAdminDocsFromCollection = (admin, collection) => {
     return new Promise(async (resolve, reject) => {
@@ -17,7 +17,7 @@ const getAdminDocsFromCollection = (admin, collection) => {
             allGames.forEach(game => {
                 if (game["adminEmail"] === admin["email"]) adminGames.push(game)
             })
-    
+
             // finally return the array
             resolve(adminGames)
         } catch (error) {
@@ -34,7 +34,7 @@ const doesDocBelongToAdmin = (docId, admin) => {
 
 const updateAdminProjectsFields = admin => {
     return new Promise(async (resolve, reject) => {
-        let updatedAdmin = {...admin} // cloning the original admin using s spread operator
+        let updatedAdmin = { ...admin } // cloning the original admin using s spread operator
         try {
             const adminScratchGamesArr = await getAdminDocsFromCollection(admin, "scratch")
             const adminCodestersGamesArr = await getAdminDocsFromCollection(admin, "codesters")
@@ -42,34 +42,34 @@ const updateAdminProjectsFields = admin => {
             // are added to the admin
 
             adminScratchGamesArr.forEach(game => {
-                if ( (game["adminEmail"] === updatedAdmin["email"]) && (!updatedAdmin["projectsIds"]["scratch"].includes(game["id"])))
-                    updatedAdmin["projectsIds"]["scratch"].push(game["id"])                   
+                if ((game["adminEmail"] === updatedAdmin["email"]) && (!updatedAdmin["projectsIds"]["scratch"].includes(game["id"])))
+                    updatedAdmin["projectsIds"]["scratch"].push(game["id"])
             })
             adminCodestersGamesArr.forEach(game => {
-                if ( (game["adminEmail"] === updatedAdmin["email"]) && (!updatedAdmin["projectsIds"]["codesters"].includes(game["id"])))
-                    updatedAdmin["projectsIds"]["codesters"].push(game["id"])                    
+                if ((game["adminEmail"] === updatedAdmin["email"]) && (!updatedAdmin["projectsIds"]["codesters"].includes(game["id"])))
+                    updatedAdmin["projectsIds"]["codesters"].push(game["id"])
             })
             // also keep in mind that
             // if a doc got deleted (from codesters or scratch collections)
             // make sure to remove it from the admin document as well.            
-            updatedAdmin["projectsIds"]["codesters"].forEach(adminCodestersDocId=>{
+            updatedAdmin["projectsIds"]["codesters"].forEach(adminCodestersDocId => {
                 const found = adminCodestersGamesArr.find(codestersDoc => codestersDoc["id"] === adminCodestersDocId);
-                if(found===undefined){
+                if (found === undefined) {
                     const docIndexToBeRemoved = updatedAdmin["projectsIds"]["codesters"].indexOf(adminCodestersDocId)
                     updatedAdmin["projectsIds"]["codesters"].splice(docIndexToBeRemoved, 1); // remove that document using the splice method
                 }
             })
-            updatedAdmin["projectsIds"]["scratch"].forEach(adminScratchDocId=>{
+            updatedAdmin["projectsIds"]["scratch"].forEach(adminScratchDocId => {
                 const found = adminScratchGamesArr.find(scratchDoc => scratchDoc["id"] === adminScratchDocId);
-                if(found===undefined){
+                if (found === undefined) {
                     const docIndexToBeRemoved = updatedAdmin["projectsIds"]["scratch"].indexOf(adminScratchDocId)
                     updatedAdmin["projectsIds"]["scratch"].splice(docIndexToBeRemoved, 1); // remove that document using the splice method
                 }
             })
             // update the numberOfProjects field as well
-            updatedAdmin["numberOfProjects"] = updatedAdmin["projectsIds"]["scratch"].length +  updatedAdmin["projectsIds"]["codesters"].length
+            updatedAdmin["numberOfProjects"] = updatedAdmin["projectsIds"]["scratch"].length + updatedAdmin["projectsIds"]["codesters"].length
             if (!isDeepEqual(updatedAdmin, admin))
-                await createDoc("admins",updatedAdmin["email"],updatedAdmin)
+                await createDoc("admins", updatedAdmin["email"], updatedAdmin)
             // finally return the updatedAdmin
             resolve(updatedAdmin)
         } catch (error) {
@@ -86,31 +86,28 @@ const updateAdminProjectsFields = admin => {
  * @returns {promise} searched document as an object if id exists in db, else false or error.
  * @author Khaled Badran (Programming Gym) <gym4programming@gmail.com>
  */
-const isDocInDb = (collectionName, docId) => {
-    return new Promise((resolve, reject) => {
-        let docsArr = []
-        readDocs(collectionName)
-            .then(parsedGamesArr => {
-                docsArr = [...parsedGamesArr];
-                // [...arr] this is called javascript spread operator
+const isDocInDb = async docId => {
+    try {
+        let foundDoc = {}
+        const scratchDocsArr = await readDocs("scratch")
+        const codestersDocArr = await readDocs("codesters")
+        const allDocsArr = [...scratchDocsArr, ...codestersDocArr] // spread operator to concat arrays
+    
+        for (const [index, docObj] of allDocsArr.entries()) {
+            if (docObj["id"] === docId) {
+                foundDoc = {...docObj};
+                // {...obj} this is called javascript spread operator
                 // it is used for deep copying/cloning
-                for (const [index,docObj] of docsArr.entries()) {
-                    if (docObj["id"] === docId) {
-                        resolve(docObj);
-                        break
-                    }
-                    // if we reached the last element/document of the array/db and the document isn't found
-                    // that means this required document doesn't exist in db 
-                    if (index === docsArr.length - 1 && docObj["id"] !== docId) { 
-                        reject(false);
-                        break
-                    }
-                }
-            })
-            .catch(error => {
-                reject(false)
-            })
-    })
+                return foundDoc 
+            }
+            // if we reached the last element/document of the array/db and the document isn't found
+            // that means this required document doesn't exist in db 
+            if (index === allDocsArr.length - 1 && docObj["id"] !== docId)
+                return false
+        }
+    } catch (error) {
+        return false
+    }
 }
 
 export {
