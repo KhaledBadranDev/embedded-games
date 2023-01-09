@@ -62,7 +62,7 @@ const AdminsToolbar = () => {
     return (
         <div className="container bg-dark rounded rounded-5 p-md-5 p-3">
             <div className="container text-muted bg-dark rounded rounded-3 shadow-lg pt-2 pb-2 mb-2 text-white">
-                <Row className="" xs={1} md={2}>
+                <Row className="" xs={1} lg={2}>
                     <Col className="mt-md-0 text-center text-lg-start" key={1} >
                         <span className="px-1">
                             {/* string interpolation syntax: `..... ${var} ..` */}
@@ -72,13 +72,13 @@ const AdminsToolbar = () => {
                     <Col className="mt-2 mt-md-0 text-center text-lg-end" key={2} >
                         <span className="px-1">
                             {/* string interpolation syntax: `..... ${var} ..` */}
-                            {`lastSignInTime: ${admin["lastSignInTime"]}`}
+                            {`projectsAddedByYou: ${admin["numberOfProjects"]}`}
                         </span>
                     </Col>
                     <Col className="mt-2 mt-md-0 text-center text-lg-start" key={3} >
                         <span className="px-1">
                             {/* string interpolation syntax: `..... ${var} ..` */}
-                            {`projectsAddedByYou: ${admin["numberOfProjects"]}`}
+                            {`lastSignInTime: ${admin["lastSignInTime"]}`}
                         </span>
                     </Col>
                     <Col className="mt-2 mt-md-0 text-center text-lg-end" key={4} >
