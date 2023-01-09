@@ -37,6 +37,16 @@ import {
 const handleAddSubmission = async (event, id, platform, admin, setAdmin) => {
     try {
         event.preventDefault()
+        // avoid having duplicates in db 
+        // and disable other admins to change the adminEmail field
+        // of a doc that they never added 
+        // if the document exist already in the database,
+        // then it can't be added again
+        const foundDoc = await isDocInDb(id)
+        if (foundDoc) {
+            console.log(`The document with the given id exists already in the database!\nIt has been added by ${foundDoc["adminEmail"]}`)
+            return
+        }
         // avoid having case sensitivity bugs
         const collectionName = platform.toLowerCase()
         // consume the right API and fetch the right data based on the collection
@@ -116,7 +126,7 @@ const handleDeleteSubmission = async (event, id, platform, admin, setAdmin) => {
                 console.log(error)
             })
     }
-    else console.log("Not enough permissions! This project wasn't added by you.")
+    else console.log(`Not enough permissions! This project wasn't added by you.\nIt has been added by ${foundDoc["adminEmail"]}`)
 }
 
 const handleSignInOrUpSubmission = (event, wantToSignedUp, email, password, setAdmin, setIsAdminSignedIn) => {
