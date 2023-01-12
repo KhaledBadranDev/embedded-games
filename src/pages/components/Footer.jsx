@@ -1,48 +1,42 @@
 import React from "react";
-import { AiOutlineGithub , AiFillYoutube} from "react-icons/ai";
-import {FaBloggerB} from "react-icons/fa"
+import { AiOutlineGithub, AiFillYoutube } from "react-icons/ai";
+import { FaBloggerB } from "react-icons/fa"
 
 const Footer = () => {
 
     return (
         // Footer 
         <footer className="bg-dark text-center text-white mt-5" >
-            <div className="container p-4">
+            <div className="container py-3">
                 {/* Section: Social media  */}
-                <section className="mb-4">
-                    {/* Facebook  */}
-                    <a className="btn btn-outline-light m-2" href="#!" role="button" style={{borderRadius: "50%"}}>
-                        <AiOutlineGithub style={{fontSize: '30px'}}/>
+                <section className="mb-2">
+                    {/* youtube  */}
+                    <a className="btn btn-outline-light m-1" href="https://www.youtube.com/channel/UCq1qtlU3urNPLd5yIwhht1w" target="_blank" role="button" style={{ borderRadius: "100%" }}>
+                        <AiFillYoutube style={{ color: "red", fontSize: '25px' }} />
                     </a>
-
-                    {/* Google  */}
-                    <a className="btn btn-outline-light m-2" href="#!" role="button" style={{borderRadius: "50%"}}>
-                        <AiFillYoutube style={{color:"red", fontSize: '30px'}}/>
+                    {/* github  */}
+                    <a className="btn btn-outline-light m-1" href="https://github.com/ProgrammingGym" target="_blank" role="button" style={{ borderRadius: "100%" }}>
+                        <AiOutlineGithub style={{ fontSize: '25px' }} />
                     </a>
-
-                    {/* Linkedin  */}
-                    <a className="btn btn-outline-light m-2" href="#!" role="button" style={{borderRadius: "50%"}}>
-                        <FaBloggerB style={{color:"orange", fontSize: '30px'}}/>    
+                    {/* blogger  */}
+                    <a className="btn btn-outline-light m-1" href="https://programming-gym.blogspot.com/" target="_blank" role="button" style={{ borderRadius: "100%" }}>
+                        <FaBloggerB style={{ color: "orange", fontSize: '25px' }} />
                     </a>
                 </section>
                 {/* End Section: Social media  */}
 
-                {/* Start Section: Text  */}
-                <section className="mb-4">
-                    <p>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt distinctio earum
-                        repellat quaerat voluptatibus placeat nam, commodi optio pariatur est quia magnam
-                        eum harum corrupti dicta, aliquam sequi voluptate quas.
-                    </p>
+                <section>
+                    <span className="block text-white">
+                        © 2022 &nbsp;
+                        <a href="https://www.khaledbadran.ca" target="_blank">
+                            Khaled Badran
+                        </a>
+                        .&nbsp;All rights reserved.
+                        <br />
+                        Built with ❤️
+                    </span>
                 </section>
-                {/* End Section: Text  */}
             </div>
-            {/* Start Copyright  */}
-            <div className="text-center p-3">
-                © 2020 Copyright:
-                <a className="text-white" href="https://mdbootstrap.com/">MDBootstrap.com</a>
-            </div>
-            {/* End Copyright  */}
         </footer>
     );
 }
