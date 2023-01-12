@@ -10,7 +10,6 @@ export default function GameCard({gameObj, setSelectedGame}) {
     // and assign the dependencies to an empty array.
     const handelPlayGame = useCallback(event => {
         event.preventDefault()
-        console.log(gameObj)
         setSelectedGame(gameObj)
     }, [gameObj, setSelectedGame])
 
