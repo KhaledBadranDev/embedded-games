@@ -32,7 +32,7 @@ const createCodestersDocObj = (fetchHTMLCodestersProject, id, admin) => {
     createdCodestersDocObj["id"] = id
     createdCodestersDocObj["title"] = projectTitle
     createdCodestersDocObj["description"] = projectDescription
-    createdCodestersDocObj["image"] = `https://codestersbucket.s3.amazonaws.com/prod_media/all/activity_images/${id}-reduced.png`
+    createdCodestersDocObj["image"] = `https://codestersbucket.s3.amazonaws.com/prod_media/all/activity_images/${id}.png`
     createdCodestersDocObj["author"] = { 
         "username": author
     }
