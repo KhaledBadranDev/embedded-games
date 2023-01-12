@@ -1,18 +1,10 @@
 2. To implement:
 - add, update, delete submission status UI
-- viewing card jsx:
-    - display admin, author
-- selected card JSX
-    - can play the game
-    - display admin, author, description
-    - display instructions (if scratch) 
 - home page
     - GIFs
     - contact me form
     - how to use website
     - about
-- fix footer
-- fix toggle navbar icon for small screens
 
 Finally: Remove the proxy field from package.json before deploying the app for prod.
 It is just for dev purposes to avoid cros issues. 
