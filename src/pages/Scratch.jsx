@@ -1,18 +1,37 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import StructureGamesCards from './components/StructureGamesCards'
 import { readDocs } from "../firebase/dbCRUD"
 
 
 const Scratch = () => {
-    const [gamesArr, setGamesArr] = useState([])
+    // const [gamesArr, setGamesArr] = useState([])
 
-    useEffect(() => {
-        readDocs("scratch")
-            .then(parsedGamesArr => {
-                setGamesArr(parsedGamesArr);
-            })
+    // TODO 
+    // This is tmp code to avoid fetching data from the firestore db
+    // as the free plan gives us only limited number of invocations.
+    // Afterwards we receive an error "FirebaseError: Quota exceeded."
+    const gamesArr = [
+        {
+            "adminEmail": "khaled@test.com",
+            "id": "706887362",
+            "title": "landing bird",
+            "instructions": "use the arrow keys to change the angle of the bird",
+            "description": "To win this game you need to land with 90 degree angle",
+            "author":{
+                username:"ProgrammingGym"
+            },
+            "image":"https://cdn2.scratch.mit.edu/get_image/project/706887362_480x360.png"
+        }
+    ]
 
-    }, [gamesArr]);
+
+    // useEffect(() => {
+    //     readDocs("scratch")
+    //         .then(parsedGamesArr => {
+    //             setGamesArr(parsedGamesArr);
+    //         })
+
+    // }, [gamesArr]);
     
     return (
         StructureGamesCards(gamesArr, "scratch")
