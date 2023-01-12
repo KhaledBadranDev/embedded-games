@@ -1,0 +1,37 @@
+.my-modal-style {
+  color: DodgerBlue;
+  width: 70%;
+  max-width: 70%;
+  min-width: 70%;
+}
+
+/* apply if screen is smaller than 770 */
+@media only screen and (max-width: 770px) {
+  .my-modal-style {
+    width: 95%;
+    max-width: 95%;
+    min-width: 95%;
+  }
+}
+
+/* apply if screen is smaller than 550 */
+@media only screen and (max-width: 550px) {
+  .my-modal-style {
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
+  }
+}
+
+/* apply if screen is bigger than 1440 */
+@media only screen and (min-width: 1440px) {
+  .my-modal-style {
+    width: 50%;
+    max-width: 50%;
+    min-width: 50%;
+  }
+}
+
+.modal-body {
+  background-color: #09152c;
+}
