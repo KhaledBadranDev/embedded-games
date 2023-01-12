@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import { useCallback } from "react";
 
 
-export default function GameCard({gameObj, setSelectedGame}) {
+export default function GameCard({gameObj, setSelectedGame, setShow}) {
     // using arrow functions or binding in JSX is a bad practice as it hurts the performance.
     // because the function is recreated on each render.
     // to solve this issue, use the callback with the useCallback() hook,
@@ -11,7 +11,8 @@ export default function GameCard({gameObj, setSelectedGame}) {
     const handelPlayGame = useCallback(event => {
         event.preventDefault()
         setSelectedGame(gameObj)
-    }, [gameObj, setSelectedGame])
+        setShow(true)
+    }, [gameObj, setSelectedGame, setShow])
 
     return (
         <Card className="bg-dark">
