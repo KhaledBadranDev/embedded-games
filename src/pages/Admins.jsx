@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import AdminsToolbar from "./components/AdminsToolbar";
 import { handleSignInOrUpSubmission } from "../utils/handleSubmissions"
-
+import SubmissionStatus from "./components/SubmissionStatus";
 
 const Admins = () => {
     const [email, setEmail] = useState("")
@@ -11,9 +11,15 @@ const Admins = () => {
     const [admin, setAdmin] = useState({})
     const [isAdminSignedIn, setIsAdminSignedIn] = useState(false)
     const [wantToSignedUp, setWantToSignedUp] = useState(false)
+    const [submissionStatusString, setSubmissionStatusString] = useState("initial")
+    const [isError, setIsError] = useState(false)
+    const [isProgressBarDone, setIsProgressBarDone] = useState(false)
+    const [isNewSubmit, setIsNewSubmit] = useState(false)
+    const [isSignInOrUpBtnDisabled, setIsSignInOrUpBtnDisabled] = useState(false);
+
     // to make the rerendering a bit more effective, useMemo hook
-    const adminContextProviderValue = useMemo(()=>({admin, setAdmin}),[admin, setAdmin])
-    
+    const adminContextProviderValue = useMemo(() => ({ admin, setAdmin }), [admin, setAdmin])
+
     // using arrow functions or binding in JSX is a bad practice as it hurts the performance.
     // because the function is recreated on each render.
     // to solve this issue, use the callback with the useCallback() hook,
@@ -22,7 +28,19 @@ const Admins = () => {
     const setPasswordCallBack = useCallback(event => setPassword(event.target.value), [])
     const setWantToSignedUpCallBack = useCallback(() => setWantToSignedUp(!wantToSignedUp), [wantToSignedUp])
     // pass "setIsAdminSignedIn" function as an argument to "handleSignInOrUpSubmission" function
-    const handleSignInOrUpSubmissionCallBack = useCallback(event => handleSignInOrUpSubmission(event,wantToSignedUp, email, password, setAdmin, setIsAdminSignedIn), [wantToSignedUp, email, password])
+    const handleSignInOrUpSubmissionCallBack = useCallback(async event => {
+        setIsSignInOrUpBtnDisabled(true)
+        setIsNewSubmit(true)
+        try {
+            setSubmissionStatusString("") // just to start rendering the progress bar while the admin is trying to sign in.
+            const res = await handleSignInOrUpSubmission(event, wantToSignedUp, email, password, setAdmin, setIsAdminSignedIn)
+            setIsError(false)
+            setSubmissionStatusString(res)
+        } catch (error) {
+            setIsError(true)
+            setSubmissionStatusString(error)
+        }
+    }, [wantToSignedUp, email, password, setIsNewSubmit])
 
 
     return (
@@ -32,7 +50,7 @@ const Admins = () => {
                 // React bootstrap component link:
                 // https://react-bootstrap.netlify.app/forms/overview/
             */}
-            {!isAdminSignedIn &&
+            {(!isAdminSignedIn || !isProgressBarDone) &&
                 <Form className="container text-white  rounded-3 shadow p-3 mb-5 bg-dark rounded" onSubmit={handleSignInOrUpSubmissionCallBack}>
                     <Form.Group className="mb-3" controlId="formBasicEmail">
                         <Form.Label>Email address</Form.Label>
@@ -58,16 +76,29 @@ const Admins = () => {
 
                     <div className="d-grid gap-2 col-6 mx-auto">
                         {!wantToSignedUp && // if already an admin then sign in
-                            <Button variant="primary" type="submit">
+                            <Button variant="primary" type="submit" disabled={isSignInOrUpBtnDisabled}>
                                 Sign In
                             </Button>
                         }
                         {wantToSignedUp && // if want to be an admin then sign up
-                            <Button variant="success" type="submit">
+                            <Button variant="success" type="submit" disabled={isSignInOrUpBtnDisabled}>
                                 Sign Up
                             </Button>
                         }
                     </div>
+                    {/* submission progress bar */}
+                    {submissionStatusString!=="initial" &&
+                        <SubmissionStatus 
+                            submissionSuccessMessage ={`${wantToSignedUp ? "signed up" : "signed in"}`}
+                            isError = {isError}
+                            submissionStatusString = {submissionStatusString}
+                            setIsProgressBarDone = {setIsProgressBarDone}
+                            setDisableButtons = {[setIsSignInOrUpBtnDisabled]}
+                            isNewSubmit = {isNewSubmit}
+                            setIsNewSubmit = {setIsNewSubmit}
+                        > 
+                        </SubmissionStatus>
+                    }
                     <div className="text-white text-center">
                         {!wantToSignedUp && // if the sign in form is displayed then show the sign up question
                             <>
@@ -77,7 +108,8 @@ const Admins = () => {
                                 <button
                                     type="button"
                                     className="btn btn-link mt-0"
-                                    onClick = {setWantToSignedUpCallBack}
+                                    onClick={setWantToSignedUpCallBack}
+                                    disabled={isSignInOrUpBtnDisabled}
                                 >
                                     Sign Up
                                 </button>
@@ -91,7 +123,8 @@ const Admins = () => {
                                 <button
                                     type="button"
                                     className="btn btn-link mt-0"
-                                    onClick = {setWantToSignedUpCallBack}
+                                    onClick={setWantToSignedUpCallBack}
+                                    disabled={isSignInOrUpBtnDisabled}
                                 >
                                     Sign In
                                 </button>
@@ -101,7 +134,7 @@ const Admins = () => {
 
                 </Form>
             }
-            {isAdminSignedIn &&
+            {(isAdminSignedIn && isProgressBarDone)&&
                 <AdminContext.Provider value={adminContextProviderValue}>
                     <AdminsToolbar></AdminsToolbar>
                 </AdminContext.Provider>
