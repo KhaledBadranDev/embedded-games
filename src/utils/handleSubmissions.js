@@ -44,27 +44,28 @@ const handleAddSubmission = async (event, id, platform, admin, setAdmin) => {
             // if the document exist already in the database,
             // then it can't be added again
             const foundDoc = await isDocInDb(id)
-            if (foundDoc) {
+            if (foundDoc) 
                 reject(`The document with the given id exists already in the database!\nIt has been added by ${foundDoc["adminEmail"]}`)
+            else {
+                // avoid having case sensitivity bugs
+                const collectionName = platform.toLowerCase()
+                // consume the right API and fetch the right data based on the collection
+                const fetchedProject = collectionName === "scratch" ?
+                    await fetchScratchProject(id) :
+                    await fetchCodestersProject(id)
+                // create the right schema for the document to be added to the db
+                const createdDocObj = collectionName === "scratch" ?
+                    createScratchDocObj(fetchedProject, id, admin) :
+                    createCodestersDocObj(fetchedProject, id, admin)
+                //naming the document in firestore db based on the title field 
+                const firestoreDocName = createdDocObj["title"].replace(/\s+/g, '_'); // replace whitespaces with underscores         
+                // finally create/add/write this document to firestore db 
+                const createdDocInDb = await createDoc(collectionName, firestoreDocName, createdDocObj)
+                // updated admin details/info based after adding a document to db
+                const updatedAdmin = await updateAdminProjectsFields(admin)
+                setAdmin(updatedAdmin)
+                resolve(createdDocInDb)
             }
-            // avoid having case sensitivity bugs
-            const collectionName = platform.toLowerCase()
-            // consume the right API and fetch the right data based on the collection
-            const fetchedProject = collectionName === "scratch" ?
-                await fetchScratchProject(id) :
-                await fetchCodestersProject(id)
-            // create the right schema for the document to be added to the db
-            const createdDocObj = collectionName === "scratch" ?
-                createScratchDocObj(fetchedProject, id, admin) :
-                createCodestersDocObj(fetchedProject, id, admin)
-            //naming the document in firestore db based on the title field 
-            const firestoreDocName = createdDocObj["title"].replace(/\s+/g, '_'); // replace whitespaces with underscores         
-            // finally create/add/write this document to firestore db 
-            const createdDocInDb = await createDoc(collectionName, firestoreDocName, createdDocObj)
-            // updated admin details/info based after adding a document to db
-            const updatedAdmin = await updateAdminProjectsFields(admin)
-            setAdmin(updatedAdmin)
-            resolve(createdDocInDb)
         } catch (error) {
             reject(error)
         }
@@ -185,7 +186,7 @@ const handleSignUpSubmission = (email, password, setAdmin, setIsAdminSignedIn) =
                     .catch(error => reject(error))
             })
             .catch(error => {
-                console.log(error => reject(error))
+                reject(error)
             })
     })
 
