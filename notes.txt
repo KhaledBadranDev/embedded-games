@@ -1,11 +1,9 @@
 2. To implement:
-- add, update, delete submission status UI
 - home page
     - GIFs
     - contact me form
     - how to use website
     - about
 - Fix Bug: an admin can become the admin of someone else's game
-- Fix Bug: if no updates then specify that
 Finally: Remove the proxy field from package.json before deploying the app for prod.
 It is just for dev purposes to avoid cros issues. 
