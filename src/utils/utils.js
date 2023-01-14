@@ -62,8 +62,12 @@ function isObject(object) {
 }
 
 
+const sleep = milliseconds => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
 
 export {
     isValidId,
-    isDeepEqual
+    isDeepEqual,
+    sleep
 }
