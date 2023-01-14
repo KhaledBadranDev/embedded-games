@@ -55,6 +55,7 @@ const SelectedGameModal = ({ selectedGame, platform, show, setShow }) => {
 					<div className="text-muted text-start mx-3 mt-1 mb-3">
 						<span className="d-block">{`author: ${selectedGame["author"]["username"]}`}</span>
 						<span className="d-block">{`admin: ${selectedGame["adminEmail"]}`}</span>
+						<span className="d-block">{`gameID: ${selectedGame["id"]}`}</span>
 						<span className="d-block">{`description: ${selectedGame["description"]}`}</span>
 						{platform.toLowerCase() === "scratch" &&
 							<span className="d-block">{`instructions: ${selectedGame["instructions"]}`}</span>
