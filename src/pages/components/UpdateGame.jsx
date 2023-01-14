@@ -2,7 +2,7 @@ import { React, useCallback, useContext, useState } from "react";
 import Button from 'react-bootstrap/Button';
 import { handleUpdateSubmission } from "../../utils/handleSubmissions"
 import { AdminContext } from "../Admins"
-import SubmissionStatus from "./SubmissionStatus";
+import SubmissionStatusModal from "./SubmissionStatusModal";
 
 
 const UpdateGame = ({ platform }) => {
@@ -11,17 +11,18 @@ const UpdateGame = ({ platform }) => {
     const [isError, setIsError] = useState(false)
     const [isProgressBarDone, setIsProgressBarDone] = useState(false)
     const [isNewSubmit, setIsNewSubmit] = useState(false)
-    // const [isSignInOrUpBtnDisabled, setIsSignInOrUpBtnDisabled] = useState(false);
+    const [show, setShow] = useState(false);
 
     // using arrow functions or binding in JSX is a bad practice as it hurts the performance.
     // because the function is recreated on each render.
     // to solve this issue, use the callback with the useCallback() hook,
     // and assign the dependencies to an empty array.
     const handleUpdateSubmissionCallBack = useCallback(async event => {
-        // setIsSignInOrUpBtnDisabled(true)
+        setSubmissionStatusString("") // just to start rendering the progress bar while the game is being deleted from the db
+        setIsError(false) // to rest the value
+        setShow(true)
         setIsNewSubmit(true)
         try {
-            setSubmissionStatusString("") // just to start rendering the progress bar while the game is being deleted from the db
             const res = await handleUpdateSubmission(event, platform, admin)
             setIsError(false)
             setSubmissionStatusString(res)
@@ -46,24 +47,24 @@ const UpdateGame = ({ platform }) => {
                 </div>
                 {/* submission progress bar */}
                 {(submissionStatusString !== "initial") &&
-                    <SubmissionStatus
+                    <SubmissionStatusModal
                         submissionSuccessMessage=
                         {`
-                        ${
-                            (Array.isArray(submissionStatusString) && submissionStatusString.length > 0) ? 
-                            `updated all your ${platform.toLowerCase()} project/s\n the id/s of the updated project/s is/are: ${submissionStatusString}`
-                            : 
-                            `updated all your ${platform.toLowerCase()} project/s.\nall your ${platform.toLowerCase()} project/s are up to date`
-                        }
+                        ${(Array.isArray(submissionStatusString) && submissionStatusString.length > 0) ?
+                                `updated all your ${platform.toLowerCase()} project/s\n the id/s of the updated project/s is/are: ${submissionStatusString}`
+                                :
+                                `updated all your ${platform.toLowerCase()} project/s.\nall your ${platform.toLowerCase()} project/s are up to date already!`
+                            }
                         `}
                         isError={isError}
                         submissionStatusString={submissionStatusString}
                         setIsProgressBarDone={setIsProgressBarDone}
-                        setDisableButtons={null}
+                        show={show}
+                        setShow={setShow}
                         isNewSubmit={isNewSubmit}
                         setIsNewSubmit={setIsNewSubmit}
                     >
-                    </SubmissionStatus>
+                    </SubmissionStatusModal>
                 }
             </div>
         </div >

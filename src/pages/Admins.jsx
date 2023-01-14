@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import AdminsToolbar from "./components/AdminsToolbar";
 import { handleSignInOrUpSubmission } from "../utils/handleSubmissions"
-import SubmissionStatus from "./components/SubmissionStatus";
+import SubmissionStatusModal from "./components/SubmissionStatusModal";
 
 const Admins = () => {
     const [email, setEmail] = useState("")
@@ -14,9 +14,8 @@ const Admins = () => {
     const [submissionStatusString, setSubmissionStatusString] = useState("initial")
     const [isError, setIsError] = useState(false)
     const [isProgressBarDone, setIsProgressBarDone] = useState(false)
-    const [isNewSubmit, setIsNewSubmit] = useState(false)
-    const [isSignInOrUpBtnDisabled, setIsSignInOrUpBtnDisabled] = useState(false);
-
+	const [show, setShow] = useState(false);
+    const [isNewSubmit, setIsNewSubmit] = useState(false);
     // to make the rerendering a bit more effective, useMemo hook
     const adminContextProviderValue = useMemo(() => ({ admin, setAdmin }), [admin, setAdmin])
 
@@ -29,10 +28,11 @@ const Admins = () => {
     const setWantToSignedUpCallBack = useCallback(() => setWantToSignedUp(!wantToSignedUp), [wantToSignedUp])
     // pass "setIsAdminSignedIn" function as an argument to "handleSignInOrUpSubmission" function
     const handleSignInOrUpSubmissionCallBack = useCallback(async event => {
-        setIsSignInOrUpBtnDisabled(true)
+        setSubmissionStatusString("") // just to start rendering the progress bar while the admin is trying to sign in.
+        setIsError(false) // to rest the value
+        setShow(true)
         setIsNewSubmit(true)
         try {
-            setSubmissionStatusString("") // just to start rendering the progress bar while the admin is trying to sign in.
             const res = await handleSignInOrUpSubmission(event, wantToSignedUp, email, password, setAdmin, setIsAdminSignedIn)
             setIsError(false)
             setSubmissionStatusString(res)
@@ -40,7 +40,7 @@ const Admins = () => {
             setIsError(true)
             setSubmissionStatusString(error)
         }
-    }, [wantToSignedUp, email, password, setIsNewSubmit])
+    }, [wantToSignedUp, email, password])
 
 
     return (
@@ -76,28 +76,29 @@ const Admins = () => {
 
                     <div className="d-grid gap-2 col-6 mx-auto">
                         {!wantToSignedUp && // if already an admin then sign in
-                            <Button variant="primary" type="submit" disabled={isSignInOrUpBtnDisabled}>
+                            <Button variant="primary" type="submit">
                                 Sign In
                             </Button>
                         }
                         {wantToSignedUp && // if want to be an admin then sign up
-                            <Button variant="success" type="submit" disabled={isSignInOrUpBtnDisabled}>
+                            <Button variant="success" type="submit">
                                 Sign Up
                             </Button>
                         }
                     </div>
                     {/* submission progress bar */}
                     {submissionStatusString!=="initial" &&
-                        <SubmissionStatus 
+                        <SubmissionStatusModal 
                             submissionSuccessMessage ={`${wantToSignedUp ? "signed up" : "signed in"}`}
                             isError = {isError}
                             submissionStatusString = {submissionStatusString}
                             setIsProgressBarDone = {setIsProgressBarDone}
-                            setDisableButtons = {[setIsSignInOrUpBtnDisabled]}
+                            show = {show}
+                            setShow = {setShow}
                             isNewSubmit = {isNewSubmit}
                             setIsNewSubmit = {setIsNewSubmit}
                         > 
-                        </SubmissionStatus>
+                        </SubmissionStatusModal>
                     }
                     <div className="text-white text-center">
                         {!wantToSignedUp && // if the sign in form is displayed then show the sign up question
@@ -109,7 +110,6 @@ const Admins = () => {
                                     type="button"
                                     className="btn btn-link mt-0"
                                     onClick={setWantToSignedUpCallBack}
-                                    disabled={isSignInOrUpBtnDisabled}
                                 >
                                     Sign Up
                                 </button>
@@ -124,7 +124,6 @@ const Admins = () => {
                                     type="button"
                                     className="btn btn-link mt-0"
                                     onClick={setWantToSignedUpCallBack}
-                                    disabled={isSignInOrUpBtnDisabled}
                                 >
                                     Sign In
                                 </button>

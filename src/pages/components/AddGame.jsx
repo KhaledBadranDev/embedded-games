@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { handleAddSubmission } from "../../utils/handleSubmissions"
 import { AdminContext } from "../Admins"
-import SubmissionStatus from "./SubmissionStatus";
+import SubmissionStatusModal from "./SubmissionStatusModal";
 
 
 const AddGame = ({ platform }) => {
@@ -15,7 +15,7 @@ const AddGame = ({ platform }) => {
     const [isError, setIsError] = useState(false)
     const [isProgressBarDone, setIsProgressBarDone] = useState(false)
     const [isNewSubmit, setIsNewSubmit] = useState(false)
-    // const [isSignInOrUpBtnDisabled, setIsSignInOrUpBtnDisabled] = useState(false);
+    const [show, setShow] = useState(false);
 
     // using arrow functions or binding in JSX is a bad practice as it hurts the performance.
     // because the function is recreated on each render.
@@ -23,10 +23,11 @@ const AddGame = ({ platform }) => {
     // and assign the dependencies to an empty array.
     const setIdCallBack = useCallback(event => setId(event.target.value), [])
     const handleAddSubmissionCallBack = useCallback(async event => {
-        // setIsSignInOrUpBtnDisabled(true)
+        setSubmissionStatusString("") // just to start rendering the progress bar while the game is being deleted from the db
+        setIsError(false) // to rest the value
+        setShow(true)
         setIsNewSubmit(true)
         try {
-            setSubmissionStatusString("") // just to start rendering the progress bar while the game is being deleted from the db
             const res = await handleAddSubmission(event, id, platform, admin, setAdmin)
             setIsError(false)
             setSubmissionStatusString(res)
@@ -65,16 +66,17 @@ const AddGame = ({ platform }) => {
                 </Form>
                 {/* submission progress bar */}
                 {(submissionStatusString !== "initial") &&
-                    <SubmissionStatus
+                    <SubmissionStatusModal
                         submissionSuccessMessage={`added the ${platform.toLowerCase()} project with id: ${id}`}
                         isError={isError}
                         submissionStatusString={submissionStatusString}
                         setIsProgressBarDone={setIsProgressBarDone}
-                        setDisableButtons={null}
+                        show={show}
+                        setShow={setShow}
                         isNewSubmit={isNewSubmit}
                         setIsNewSubmit={setIsNewSubmit}
                     >
-                    </SubmissionStatus>
+                    </SubmissionStatusModal>
                 }
             </div>
         </div>
