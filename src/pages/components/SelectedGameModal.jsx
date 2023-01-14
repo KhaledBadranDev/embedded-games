@@ -24,7 +24,7 @@ const SelectedGameModal = ({ selectedGame, platform, show, setShow }) => {
 				keyboard={false}
 				centered
 			>
-				<Modal.Header className="bg-dark" closeButton >
+				<Modal.Header className="bg-dark text-primary" closeButton >
 					<Modal.Title className="container-fluid text-center">{selectedGame["title"]}</Modal.Title>
 				</Modal.Header>
 				<Modal.Body className="container-fluid modal-body text-center">

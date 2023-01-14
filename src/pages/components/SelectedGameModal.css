@@ -1,5 +1,8 @@
+.modal-body {
+  background-color: #09152c;
+}
+
 .my-modal-style {
-  color: DodgerBlue;
   width: 70%;
   max-width: 70%;
   min-width: 70%;
@@ -30,8 +33,4 @@
     max-width: 50%;
     min-width: 50%;
   }
-}
-
-.modal-body {
-  background-color: #09152c;
 }
