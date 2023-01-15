@@ -129,7 +129,7 @@ const Home = () => {
                                     <Card.Text className="text-muted mb-0">Select any project you want to add, click on copy link. There you can find the id.</Card.Text>
                                 </Card.Body>
                                 <div className="d-grid gap-2">
-                                    <Button variant="primary" onClick={event => handleOpenImageCallBack(event, "http://localhost:3000/static/media/how_to_id_scratch.f888f11f88cbc2b26f7f.png")}>Open Image</Button>
+                                    <Button variant="primary" onClick={event => handleOpenImageCallBack(event, "https://embeddedgames.firebaseapp.com/static/media/how_to_id_scratch.f888f11f88cbc2b26f7f.png")}>Open Image</Button>
                                 </div>
                             </Card>
                         </Col>
@@ -141,7 +141,7 @@ const Home = () => {
                                     <Card.Text className="text-muted mb-0">Select any project you want to add from the public/shared projects page.</Card.Text>
                                 </Card.Body>
                                 <div className="d-grid gap-2">
-                                    <Button variant="primary" onClick={event => handleOpenImageCallBack(event, "http://localhost:3000/static/media/how_to_id_codesters_1.d0d35a62a1d0a88c9f95.png")}>Open Image</Button>
+                                    <Button variant="primary" onClick={event => handleOpenImageCallBack(event, "https://embeddedgames.firebaseapp.com/static/media/how_to_id_codesters_1.d0d35a62a1d0a88c9f95.png")}>Open Image</Button>
                                 </div>
                             </Card>
                         </Col>
@@ -153,7 +153,7 @@ const Home = () => {
                                     <Card.Text className="text-muted mb-0">After step 1 you can now click on the share button. There you can find the id.</Card.Text>
                                 </Card.Body>
                                 <div className="d-grid gap-2">
-                                    <Button variant="primary" onClick={event => handleOpenImageCallBack(event, "http://localhost:3000/static/media/how_to_id_codesters_2.964329deb7c681e69e2b.png")}>Open Image</Button>
+                                    <Button variant="primary" onClick={event => handleOpenImageCallBack(event, "https://embeddedgames.firebaseapp.com/static/media/how_to_id_codesters_2.964329deb7c681e69e2b.png")}>Open Image</Button>
                                 </div>
                             </Card>
                         </Col>

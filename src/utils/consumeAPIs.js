@@ -6,7 +6,7 @@ import axios from "axios";
 const fetchScratchProject = (id) => {
     return new Promise(async (resolve, reject) => {
         // string interpolation syntax: `..... ${var} ..`
-        axios.get(`/projects/${id}`)
+        axios.get(`https://api.scratch.mit.edu/projects/${id}`)
             .then(res => {
                 if (res.status === 200) { // status 200 is a success response
                     const fetchedData = res.data
