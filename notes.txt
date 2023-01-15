@@ -1,0 +1,15 @@
+-------------
+add the following for dev in the package.json file:
+"proxy": "https://api.scratch.mit.edu"
+-------------
+
+-------------
+adjust the scratch axios fetch request in consumeAPIs file:
+for dev: /projects/${id}
+for prod: https://api.scratch.mit.edu/projects/${id}
+-------------
+
+-------------
+for prod: fetch scratch and codesters games from db.
+for dev: make a constant array instead.
+-------------

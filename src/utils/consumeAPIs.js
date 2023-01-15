@@ -6,7 +6,7 @@ import axios from "axios";
 const fetchScratchProject = (id) => {
     return new Promise(async (resolve, reject) => {
         // string interpolation syntax: `..... ${var} ..`
-        axios.get(`/projects/${id}`) 
+        axios.get(`/projects/${id}`)
             .then(res => {
                 if (res.status === 200) { // status 200 is a success response
                     const fetchedData = res.data
@@ -47,7 +47,26 @@ const fetchCodestersProject = async (id) => {
     })
 }
 
+const sendEmail = (emailInfoObj) => {
+    // Reference/Documentation: https://formsubmit.co/ajax-documentation
+    return new Promise(async (resolve, reject) => {
+        fetch("https://formsubmit.co/ajax/adc8426fa7d0c56378adbc291f7a614e", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(emailInfoObj)
+        })
+            .then(response => response.json())
+            .then(data => resolve(data))
+            .catch(error => reject(error));    
+    })
+}
+
+
 export {
     fetchScratchProject,
-    fetchCodestersProject
+    fetchCodestersProject,
+    sendEmail
 }

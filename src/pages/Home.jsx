@@ -1,4 +1,7 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
+import { sendEmail } from "../utils/consumeAPIs";
+import SubmissionStatusModal from "./components/SubmissionStatusModal";
+
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Card from 'react-bootstrap/Card';
@@ -9,10 +12,17 @@ import gif1 from "../assets/gif1.gif";
 import id_scratch from "../assets/how_to_id_scratch.png";
 import id_codesters_1 from "../assets/how_to_id_codesters_1.png";
 import id_codesters_2 from "../assets/how_to_id_codesters_2.png";
-import { useCallback } from "react";
 
 const Home = () => {
-
+    const [senderEmail, setSenderEmail] = useState("")
+    const [senderName, setSenderName] = useState("")
+    const [subject, setSubject] = useState("")
+    const [senderMessage, setSenderMessage] = useState("")
+    const [submissionStatusString, setSubmissionStatusString] = useState("initial")
+    const [isError, setIsError] = useState(false)
+    const [isProgressBarDone, setIsProgressBarDone] = useState(false)
+    const [show, setShow] = useState(false);
+    const [isNewSubmit, setIsNewSubmit] = useState(false);
     // using arrow functions or binding in JSX is a bad practice as it hurts the performance.
     // because the function is recreated on each render.
     // to solve this issue, use the callback with the useCallback() hook,
@@ -21,6 +31,50 @@ const Home = () => {
         event.preventDefault()
         window.open(imageUrl)
     }, [])
+    const setSenderEmailCallBack = useCallback(event => setSenderEmail(event.target.value), [])
+    const setSenderNameCallBack = useCallback(event => setSenderName(event.target.value), [])
+    const setSenderMessageCallBack = useCallback(event => setSenderMessage(event.target.value), [])
+    const setSubjectCallBack = useCallback(event => setSubject(event.target.value), [])
+    const handleSubmitCallBack = useCallback(async (event) => {
+        event.preventDefault()
+        const emailInfoObj = {
+            "Sender Email": senderEmail,
+            "Sender Name": senderName,
+            "Sender Message": senderMessage,
+            "_subject": subject,
+            "_template": "table",
+            "_captcha": "false"
+        }
+        setSubmissionStatusString("") // just to start rendering the progress bar while the email is being sent.
+        setIsError(false) // to rest the value
+        setShow(true)
+        setIsNewSubmit(true)
+        try {
+            const sentEmailStatus = await sendEmail(emailInfoObj)
+            //sentEmailStatus looks somehow as follows: {success: 'false', message: 'Email address test is not formatted correctly.'}
+            if (sentEmailStatus["success"] === "false") {
+                setIsError(true)
+                setSubmissionStatusString(sentEmailStatus["message"])
+                throw new Error(sentEmailStatus["message"])
+            }
+            else {
+                setIsError(false)
+                setSubmissionStatusString(sentEmailStatus["message"])
+                resetInputFields()
+            }
+        } catch (error) {
+            setIsError(true)
+            setSubmissionStatusString(error)
+        }
+    }, [senderEmail, senderName, senderMessage, subject])
+
+
+    const resetInputFields = () => {
+        setSenderEmail("")
+        setSenderName("")
+        setSubject("")
+        setSenderMessage("")
+    }
 
     return (
         <>
@@ -117,28 +171,61 @@ const Home = () => {
                     please do not hesitate to reach out!<br />
                 </p>
 
-                <Form className="container text-white  rounded-3 shadow p-3 mb-5 bg-dark rounded" action="https://formsubmit.co/adc8426fa7d0c56378adbc291f7a614e" method="POST">
-                    <input type="hidden" name="_captcha" value="false"/>
-                    <input type="hidden" name="_next" value="false"/>
+                <style>
+                    {` 
+                        /* This is to change the color of the placeholder of the form */
+                        .form-control::placeholder { 
+                            color: #212529; /* This is equal to text-dark in bootstrap*/
+                        }
+                    `}
+                </style>
+                {/* Reference/Documentation: https://formsubmit.co/ */}
+                <Form className="container text-white  rounded-3 shadow p-3 mb-5 bg-dark rounded" onSubmit={handleSubmitCallBack}>
                     <Form.Group className="mb-3 text-start" controlId="formBasicEmail">
                         <Form.Label className="ms-2">Email</Form.Label>
                         <Form.Control
+                            required
                             type="email"
                             placeholder="Enter email"
-                            required
+                            className="bg-secondary"
+                            value={senderEmail}
+                            onChange={setSenderEmailCallBack}
                         />
                     </Form.Group>
 
                     <Form.Group className="mb-3 text-start">
                         <Form.Label className="ms-2">Name</Form.Label>
                         <Form.Control
-                            placeholder="Password"
                             required
+                            className="bg-secondary"
+                            placeholder="Full name"
+                            value={senderName}
+                            onChange={setSenderNameCallBack}
+                        />
+                    </Form.Group>
+                    <Form.Group className="mb-3 text-start">
+                        <Form.Label className="ms-2">Subject</Form.Label>
+                        <Form.Control
+                            required
+                            className="bg-secondary"
+                            placeholder="Feedback"
+                            value={subject}
+                            onChange={setSubjectCallBack}
                         />
                     </Form.Group>
 
-                    <div className="form-floating text-muted">
-                        <textarea className="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
+                    <div className="form-floating text-dark">
+                        <textarea
+                            required
+                            className="form-control bg-secondary"
+                            rows="10"
+                            placeholder="Leave a comment here"
+                            id="floatingTextarea"
+                            style={{ height: "100%" }}
+                            value={senderMessage}
+                            onChange={setSenderMessageCallBack}
+                        >
+                        </textarea>
                         <label for="floatingTextarea">Your Message</label>
                     </div>
                     <div className="mt-3 d-grid gap-2 col-lg-4 col-6 mx-auto">
@@ -147,9 +234,21 @@ const Home = () => {
                         </Button>
                     </div>
                 </Form>
-
-
             </div>
+            {/* submission progress bar */}
+            {submissionStatusString !== "initial" &&
+                <SubmissionStatusModal
+                    submissionSuccessMessage="sent the email"
+                    isError={isError}
+                    submissionStatusString={submissionStatusString}
+                    setIsProgressBarDone={setIsProgressBarDone}
+                    show={show}
+                    setShow={setShow}
+                    isNewSubmit={isNewSubmit}
+                    setIsNewSubmit={setIsNewSubmit}
+                >
+                </SubmissionStatusModal>
+            }
         </>
 
     );
