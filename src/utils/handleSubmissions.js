@@ -58,7 +58,7 @@ const handleAddSubmission = async (event, id, platform, admin, setAdmin) => {
                     createScratchDocObj(fetchedProject, id, admin) :
                     createCodestersDocObj(fetchedProject, id, admin)
                 //naming the document in firestore db based on the title field 
-                const firestoreDocName = createdDocObj["title"].replace(/\s+/g, '_'); // replace whitespaces with underscores         
+                const firestoreDocName = createdDocObj["title"] !== undefined && createdDocObj["title"] !== null ? createdDocObj["title"].replace(/\s+/g, '_') : createdDocObj["id"]// replace whitespaces with underscores         
                 // finally create/add/write this document to firestore db 
                 const createdDocInDb = await createDoc(collectionName, firestoreDocName, createdDocObj)
                 // updated admin details/info based after adding a document to db
@@ -115,7 +115,14 @@ const handleDeleteSubmission = (event, id, platform, admin, setAdmin) => {
 
             const collectionName = platform.toLowerCase()
             // ids of scratch projects are always int and stored as number in the db
-            if (collectionName === "scratch") id = parseInt(id)
+            if (collectionName === "scratch") {
+                // scratch platform provides ids that consists of digits only
+                // To check if a string contains only numbers in JavaScript, call the test() method on this regular expression:
+                //  ^\d+$. The test() method will return true if the string contains only numbers.
+                //  Otherwise, it will return false.
+                if (!(/^\d+$/.test(id))) reject("Ids of scratch projects are only digits! Maybe you choose the wrong platform.")
+                else id = parseInt(id)
+            }
 
             // if the project was not added by this admin then he/she is not allowed to delete it.
             if (doesDocBelongToAdmin(id, admin)) {
