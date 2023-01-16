@@ -27,9 +27,8 @@ const Codesters = (prop) => {
             .then(parsedGamesArr => {
                 setGamesArr(parsedGamesArr);
             })
+    }, []); // keep the dependency array empty to avoid many reads from db  
 
-    }, [gamesArr]);
-    
     return (
         StructureGamesCards(gamesArr, "codesters")
     )
