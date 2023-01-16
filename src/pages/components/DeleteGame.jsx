@@ -1,4 +1,4 @@
-import { React, useState, useCallback, useContext } from "react";
+import { React, useState, useCallback, useContext, useEffect } from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { handleDeleteSubmission } from "../../utils/handleSubmissions";
@@ -30,12 +30,19 @@ const DeleteGame = ({ platform }) => {
             const res = await handleDeleteSubmission(event, id, platform, admin, setAdmin)
             setIsError(false)
             setSubmissionStatusString(res)
+            if (isProgressBarDone) setId("")
         } catch (error) {
             setIsError(true)
             setSubmissionStatusString(error)
         }
 
-    }, [id, platform, admin, setAdmin, setIsNewSubmit])
+    }, [id, platform, admin, setAdmin, setIsNewSubmit, isProgressBarDone])
+
+    useEffect(() => {
+        //Runs on the first render
+        //And any time any dependency value changes
+        if (isProgressBarDone) setId("")
+    }, [isProgressBarDone]);
 
     return (
         <div className="mt-5 container bg-dark rounded rounded-3 shadow-lg pt-3 pb-5">
@@ -46,7 +53,7 @@ const DeleteGame = ({ platform }) => {
                         <Form.Label>Game Id</Form.Label>
                         <Form.Control
                             type="Game ID"
-                            placeholder="Enter id e.g. 723650095"
+                            placeholder= {`Enter id e.g. ${platform.toLowerCase()==="scratch" ? "723650095" : "6a95073b4fdc45a8bd7cce01de2e4b70"}`}
                             required
                             value={id}
                             onChange={setIdCallBack}
