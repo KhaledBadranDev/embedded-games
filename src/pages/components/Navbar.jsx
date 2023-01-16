@@ -3,7 +3,7 @@ import CustomLink from "./CustomLink";
 import { Link } from 'react-router-dom';
 import './Navbar.css';
 import "bootstrap/dist/css/bootstrap.min.css"
-
+import logo from "../../assets/logo.png"
 
 // reference/documentation: https://dev.to/johnotu/how-to-toggle-bootstrap-navbar-collapse-button-in-react-without-jquery-joo
 
@@ -14,7 +14,11 @@ const Navbar = () => {
     return (
         <nav className="navbar navbar-expand-md bg-dark navbar-dark py-2">
             <div className="container">
-                <Link to="./" className="navbar-brand text-info font-weight-bolder">EmbeddedGames</Link>
+                <Link to="./" className="navbar-brand text-info font-weight-bolder">
+                    <img src={logo} alt="Logo" width="36" height="36" className="vertical-align-middle" />
+                    {`\u00A0`}
+                    EmbeddedGames
+                </Link>
 
                 <button className="custom-toggler navbar-toggler" type="button" data-toggle="collapse" data-target="#toggleableNavbar" aria-controls="toggleableNavbar" aria-expanded={!isNavCollapsed ? true : false} aria-label="Toggle navigation" onClick={handleNavCollapseCallBack}>
                     <span className="navbar-toggler-icon"></span>
