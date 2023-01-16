@@ -11,15 +11,15 @@ const Footer = () => {
                 {/* Section: Social media  */}
                 <section className="mb-2">
                     {/* youtube  */}
-                    <a className="btn btn-outline-light m-1" href="https://www.youtube.com/channel/UCq1qtlU3urNPLd5yIwhht1w" target="_blank" role="button" style={{ borderRadius: "100%" }}>
+                    <a className="btn btn-outline-light m-1" href="https://www.youtube.com/channel/UCq1qtlU3urNPLd5yIwhht1w" target="_blank" rel="noreferrer" role="button" style={{ borderRadius: "100%" }}>
                         <AiFillYoutube style={{ color: "red", fontSize: '25px' }} />
                     </a>
                     {/* github  */}
-                    <a className="btn btn-outline-light m-1" href="https://github.com/ProgrammingGym" target="_blank" role="button" style={{ borderRadius: "100%" }}>
+                    <a className="btn btn-outline-light m-1" href="https://github.com/ProgrammingGym" target="_blank" rel="noreferrer" role="button" style={{ borderRadius: "100%" }}>
                         <AiOutlineGithub style={{ fontSize: '25px' }} />
                     </a>
                     {/* blogger  */}
-                    <a className="btn btn-outline-light m-1" href="https://programming-gym.blogspot.com/" target="_blank" role="button" style={{ borderRadius: "100%" }}>
+                    <a className="btn btn-outline-light m-1" href="https://programming-gym.blogspot.com/" target="_blank" rel="noreferrer" role="button" style={{ borderRadius: "100%" }}>
                         <FaBloggerB style={{ color: "orange", fontSize: '25px' }} />
                     </a>
                 </section>
@@ -28,7 +28,7 @@ const Footer = () => {
                 <section>
                     <span className="block text-white">
                         © 2022 &nbsp;
-                        <a href="https://www.khaledbadran.ca" target="_blank">
+                        <a href="https://www.khaledbadran.ca" target="_blank" rel="noreferrer">
                             Khaled Badran
                         </a>
                         .&nbsp;All rights reserved.
