@@ -12,7 +12,7 @@ const SelectedGameModal = ({ selectedGame, platform, show, setShow }) => {
 	const handleShowCodeCallback = useCallback(() => {
 		if (platform.toLowerCase() === "scratch") window.open(`https://scratch.mit.edu/projects/${selectedGame["id"]}`)
 		else window.open(`https://www.codesters.com/preview/${selectedGame["id"]}/`)
-	}, [])
+	}, [platform, selectedGame])
 
 	return (
 		<>
