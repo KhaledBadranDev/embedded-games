@@ -4,20 +4,28 @@ import axios from "axios";
 // notice the difference between using (.then(),.catch()) and (async, await)
 
 const fetchScratchProject = (id) => {
+    // fix CORS bug
+    // Reference: https://stackoverflow.com/questions/43871637/no-access-control-allow-origin-header-is-present-on-the-requested-resource-whe/43881141#43881141
+    // solution:
+    // add the following proxy before the url you want to use:
+    // https://cors-anywhere.herokuapp.com/
     return new Promise(async (resolve, reject) => {
-        // string interpolation syntax: `..... ${var} ..`
-        axios.get(`https://api.scratch.mit.edu/projects/${id}`)
-            .then(res => {
-                if (res.status === 200) { // status 200 is a success response
-                    const fetchedData = res.data
-                    resolve(fetchedData)
-                } else {
-                    reject("Couldn't find any scratch project with the given id!")
-                }
-            })
-            .catch(error => {
-                reject(error + "\nCouldn't find any scratch project with the given id!")
-            })
+        try {
+            let headersList = {
+                "Accept": "*/*",
+            }
+            // string interpolation syntax: `..... ${var} ..`
+            let reqOptions = {
+                url: `https://cors-anywhere.herokuapp.com/https://api.scratch.mit.edu/projects/${id}`,
+                method: "GET",
+                headers: headersList,
+            }
+            
+            let response = await axios.request(reqOptions);
+            resolve(response.data)            
+        } catch (error) {
+            reject(error + "\nCouldn't find any scratch project with the given id!")
+        }
     })
 }
 
@@ -60,7 +68,7 @@ const sendEmail = (emailInfoObj) => {
         })
             .then(response => response.json())
             .then(data => resolve(data))
-            .catch(error => reject(error));    
+            .catch(error => reject(error));
     })
 }
 
