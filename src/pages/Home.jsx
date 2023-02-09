@@ -87,12 +87,12 @@ const Home = () => {
                 <p className="text-muted">This website is about embedding games and projects from different platforms.
                     You can play and try these games and projects, and if you are interested in how they were implemented, you can visit the original platform and see the code.
                     Additionally, you can be an admin and contribute to this website by embedding a game or a project yourself.
-                    At the moment only games or projects from the "Scratch" platform and "Codesters" Platform can be embedded.
+                    At the moment only games or projects from the <a href="https://scratch.mit.edu/" target="_blank" rel="noreferrer">Scratch</a> platform and <a href="https://www.codesters.com/" target="_blank" rel="noreferrer">Codeters</a> Platform can be embedded.
                 </p>
             </div>
 
-            <div className="container text-center text-white my-5 py-5">
-                <h3 className="text-info mb-4">How To Use The Website</h3>
+            <div className="container text-center text-white my-5 py-5" >
+                <h3 className="text-info mb-4" id="instructions">How To Use The Website</h3>
                 <p className="text-muted">You can use the website as a user or as an admin or both.</p>
                 <h5>Aa a User</h5>
                 <p className="text-muted">
@@ -127,9 +127,10 @@ const Home = () => {
                                 <Card.Body className="text-white">
                                     <Card.Title className="text-center h6">Get Scratch Project ID</Card.Title>
                                     <Card.Text className="text-muted mb-0">Select any project you want to add, click on copy link. There you can find the id.</Card.Text>
+                                    <a href="https://scratch.mit.edu/" target="_blank" rel="noreferrer"> Visit Scratch Website</a>
                                 </Card.Body>
                                 <div className="d-grid gap-2">
-                                    <Button variant="primary" onClick={event => handleOpenImageCallBack(event, "http://localhost:3000/static/media/how_to_id_scratch.f888f11f88cbc2b26f7f.png")}>Open Image</Button>
+                                    <Button variant="primary" onClick={event => handleOpenImageCallBack(event, "https://embeddedgames.firebaseapp.com/static/media/how_to_id_scratch.f888f11f88cbc2b26f7f.png")}>Open Image</Button>
                                 </div>
                             </Card>
                         </Col>
@@ -139,9 +140,10 @@ const Home = () => {
                                 <Card.Body className="text-white">
                                     <Card.Title className="text-center h6">Get Codesters Project ID - Step 1</Card.Title>
                                     <Card.Text className="text-muted mb-0">Select any project you want to add from the public/shared projects page.</Card.Text>
+                                    <a href="https://www.codesters.com/" target="_blank" rel="noreferrer"> Visit Codesters Website</a>
                                 </Card.Body>
                                 <div className="d-grid gap-2">
-                                    <Button variant="primary" onClick={event => handleOpenImageCallBack(event, "http://localhost:3000/static/media/how_to_id_codesters_1.d0d35a62a1d0a88c9f95.png")}>Open Image</Button>
+                                    <Button variant="primary" onClick={event => handleOpenImageCallBack(event, "https://embeddedgames.firebaseapp.com/static/media/how_to_id_codesters_1.d0d35a62a1d0a88c9f95.png")}>Open Image</Button>
                                 </div>
                             </Card>
                         </Col>
@@ -151,9 +153,10 @@ const Home = () => {
                                 <Card.Body className="text-white">
                                     <Card.Title className="text-center h6">Get Codesters Project ID - Step 2</Card.Title>
                                     <Card.Text className="text-muted mb-0">After step 1 you can now click on the share button. There you can find the id.</Card.Text>
+                                    <a href="https://www.codesters.com/" target="_blank" rel="noreferrer"> Visit Codesters Website</a>
                                 </Card.Body>
                                 <div className="d-grid gap-2">
-                                    <Button variant="primary" onClick={event => handleOpenImageCallBack(event, "http://localhost:3000/static/media/how_to_id_codesters_2.964329deb7c681e69e2b.png")}>Open Image</Button>
+                                    <Button variant="primary" onClick={event => handleOpenImageCallBack(event, "https://embeddedgames.firebaseapp.com/static/media/how_to_id_codesters_2.964329deb7c681e69e2b.png")}>Open Image</Button>
                                 </div>
                             </Card>
                         </Col>
@@ -180,60 +183,62 @@ const Home = () => {
                     `}
                 </style>
                 {/* Reference/Documentation: https://formsubmit.co/ */}
-                <Form className="container text-white  rounded-3 shadow p-3 mb-5 bg-dark rounded" onSubmit={handleSubmitCallBack}>
-                    <Form.Group className="mb-3 text-start" controlId="formBasicEmail">
-                        <Form.Label className="ms-2">Email</Form.Label>
-                        <Form.Control
-                            required
-                            type="email"
-                            placeholder="Enter email"
-                            className="bg-secondary"
-                            value={senderEmail}
-                            onChange={setSenderEmailCallBack}
-                        />
-                    </Form.Group>
+                <div className="container text-center px-lg-5 px-2" >
+                    <Form className="container text-white  rounded-3 shadow p-3 mb-5 bg-dark rounded px-lg-5 " onSubmit={handleSubmitCallBack}>
+                        <Form.Group className="mb-3 text-start" controlId="formBasicEmail">
+                            <Form.Label className="ms-2">Email</Form.Label>
+                            <Form.Control
+                                required
+                                type="email"
+                                placeholder="Enter email"
+                                className="bg-secondary"
+                                value={senderEmail}
+                                onChange={setSenderEmailCallBack}
+                            />
+                        </Form.Group>
 
-                    <Form.Group className="mb-3 text-start">
-                        <Form.Label className="ms-2">Name</Form.Label>
-                        <Form.Control
-                            required
-                            className="bg-secondary"
-                            placeholder="Full name"
-                            value={senderName}
-                            onChange={setSenderNameCallBack}
-                        />
-                    </Form.Group>
-                    <Form.Group className="mb-3 text-start">
-                        <Form.Label className="ms-2">Subject</Form.Label>
-                        <Form.Control
-                            required
-                            className="bg-secondary"
-                            placeholder="Feedback"
-                            value={subject}
-                            onChange={setSubjectCallBack}
-                        />
-                    </Form.Group>
+                        <Form.Group className="mb-3 text-start">
+                            <Form.Label className="ms-2">Name</Form.Label>
+                            <Form.Control
+                                required
+                                className="bg-secondary"
+                                placeholder="Full name"
+                                value={senderName}
+                                onChange={setSenderNameCallBack}
+                            />
+                        </Form.Group>
+                        <Form.Group className="mb-3 text-start">
+                            <Form.Label className="ms-2">Subject</Form.Label>
+                            <Form.Control
+                                required
+                                className="bg-secondary"
+                                placeholder="Feedback"
+                                value={subject}
+                                onChange={setSubjectCallBack}
+                            />
+                        </Form.Group>
 
-                    <div className="form-floating text-dark">
-                        <textarea
-                            required
-                            className="form-control bg-secondary"
-                            rows="10"
-                            placeholder="Leave a comment here"
-                            id="floatingTextarea"
-                            style={{ height: "100%" }}
-                            value={senderMessage}
-                            onChange={setSenderMessageCallBack}
-                        >
-                        </textarea>
-                        <label for="floatingTextarea">Your Message</label>
-                    </div>
-                    <div className="mt-3 d-grid gap-2 col-lg-4 col-6 mx-auto">
-                        <Button variant="primary" type="submit">
-                            Send
-                        </Button>
-                    </div>
-                </Form>
+                        <div className="form-floating text-dark">
+                            <textarea
+                                required
+                                className="form-control bg-secondary"
+                                rows="10"
+                                placeholder="Leave a comment here"
+                                id="floatingTextarea"
+                                style={{ height: "100%" }}
+                                value={senderMessage}
+                                onChange={setSenderMessageCallBack}
+                            >
+                            </textarea>
+                            <label for="floatingTextarea">Your Message</label>
+                        </div>
+                        <div className="mt-3 d-grid gap-2 col-lg-4 col-6 mx-auto">
+                            <Button variant="primary" type="submit">
+                                Send
+                            </Button>
+                        </div>
+                    </Form>
+                </div>
             </div>
             {/* submission progress bar */}
             {submissionStatusString !== "initial" &&

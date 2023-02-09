@@ -24,14 +24,12 @@ const Scratch = () => {
     //     }
     // ]
 
-
     useEffect(() => {
         readDocs("scratch")
             .then(parsedGamesArr => {
                 setGamesArr(parsedGamesArr);
             })
-
-    }, [gamesArr]);
+    }, []); // keep the dependency array empty to avoid many reads from db  
     
     return (
         StructureGamesCards(gamesArr, "scratch")
